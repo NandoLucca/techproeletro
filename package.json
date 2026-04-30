@@ -16,6 +16,7 @@
   "author": "Fernando Henrique de Lucca",
   "license": "MIT",
   "dependencies": {
+    "@supabase/supabase-js": "^2.105.1",
     "express": "^4.22.1"
   },
   "engines": {
