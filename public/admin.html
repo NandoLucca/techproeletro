@@ -12,13 +12,13 @@
       min-height: 100vh;
       padding: 20px;
     }
-    .container {
+   .container {
       background: white;
       padding: 40px;
       border-radius: 15px;
       box-shadow: 0 10px 40px rgba(0,0,0,0.2);
       width: 100%;
-      max-width: 1000px;
+      max-width: 1100px;
       margin: 0 auto;
     }
     h2 {
@@ -60,6 +60,26 @@
       width: auto;
       padding: 10px 20px;
       margin-bottom: 15px;
+      margin-right: 10px;
+    }
+    button.btn-editar {
+      background: #ffc107;
+      color: #000;
+      padding: 6px 12px;
+      font-size: 14px;
+      width: auto;
+      margin: 0 5px 0 0;
+    }
+    button.btn-excluir {
+      background: #dc3545;
+      padding: 6px 12px;
+      font-size: 14px;
+      width: auto;
+      margin: 0;
+    }
+    button.btn-cancelar {
+      background: #6c757d;
+      margin-top: 10px;
     }
     #formulario { display: none; }
     #msg {
@@ -68,8 +88,8 @@
       font-weight: bold;
       min-height: 20px;
     }
-    .sucesso { color: #28a745; }
-    .erro { color: #dc3545; }
+   .sucesso { color: #28a745; }
+   .erro { color: #dc3545; }
     label {
       display: block;
       margin-top: 10px;
@@ -82,7 +102,7 @@
       border: none;
       border-top: 2px solid #e0e0e0;
     }
-    .tabela-wrapper {
+   .tabela-wrapper {
       overflow-x: auto;
       margin-top: 15px;
     }
@@ -104,7 +124,7 @@
     tr:hover {
       background: #f8f9fa;
     }
-    .img-mini {
+   .img-mini {
       width: 60px;
       height: 60px;
       object-fit: cover;
@@ -112,6 +132,7 @@
       border: 1px solid #ddd;
     }
     #login { max-width: 450px; margin: 0 auto; }
+   .acoes { white-space: nowrap; }
   </style>
 </head>
 <body>
@@ -123,7 +144,9 @@
     </div>
 
     <div id="formulario">
-      <h2>📦 Cadastrar Produto</h2>
+      <h2 id="titulo-form">📦 Cadastrar Produto</h2>
+      <input type="hidden" id="produto-id">
+
       <label>Nome do produto</label>
       <input type="text" id="nome" placeholder="Ex: Notebook Gamer">
 
@@ -136,14 +159,15 @@
       <label>Link de afiliado</label>
       <input type="text" id="link" placeholder="https://...">
 
-      <button onclick="salvar()">Salvar no Supabase</button>
+      <button id="btn-salvar" onclick="salvar()">Salvar no Supabase</button>
+      <button id="btn-cancelar" class="btn-cancelar" onclick="cancelarEdicao()" style="display:none;">Cancelar Edição</button>
       <p id="msg"></p>
 
       <hr>
 
       <h2>📋 Produtos Cadastrados</h2>
       <button class="btn-menor" onclick="carregarProdutos()">🔄 Atualizar Lista</button>
-      
+
       <div class="tabela-wrapper">
         <table>
           <thead>
@@ -154,10 +178,11 @@
               <th>Preço</th>
               <th>Link</th>
               <th>Criado em</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody id="lista-produtos">
-            <tr><td colspan="6" style="text-align: center;">Carregando...</td></tr>
+            <tr><td colspan="7" style="text-align: center;">Carregando...</td></tr>
           </tbody>
         </table>
       </div>
@@ -165,13 +190,14 @@
   </div>
 
 <script>
+let editandoId = null;
+
 function entrar() {
   const senhaDigitada = document.getElementById('senha').value.trim();
-
   if (senhaDigitada === 'techpro2026') {
     document.getElementById('login').style.display = 'none';
     document.getElementById('formulario').style.display = 'block';
-    carregarProdutos(); // Já puxa a lista quando loga
+    carregarProdutos();
   } else {
     alert('Senha incorreta! Você digitou: [' + senhaDigitada + ']');
   }
@@ -187,18 +213,21 @@ async function salvar() {
 
   const msg = document.getElementById('msg');
 
-  if (!produto.nome || !produto.img || !produto.link) {
+  if (!produto.nome ||!produto.img ||!produto.link) {
     msg.textContent = 'Preenche nome, imagem e link, meu consagrado';
     msg.className = 'erro';
     return;
   }
 
-  msg.textContent = 'Salvando no banco...';
+  msg.textContent = editandoId? 'Atualizando...' : 'Salvando no banco...';
   msg.className = '';
 
   try {
-    const res = await fetch('/api/produtos', {
-      method: 'POST',
+    const url = editandoId? `/api/produtos/${editandoId}` : '/api/produtos';
+    const method = editandoId? 'PUT' : 'POST';
+
+    const res = await fetch(url, {
+      method: method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(produto)
     });
@@ -206,13 +235,10 @@ async function salvar() {
     const data = await res.json();
 
     if (res.ok) {
-      msg.textContent = 'Produto salvo no Supabase! ✅';
+      msg.textContent = editandoId? 'Produto atualizado! ✅' : 'Produto salvo no Supabase! ✅';
       msg.className = 'sucesso';
-      document.getElementById('nome').value = '';
-      document.getElementById('preco').value = '';
-      document.getElementById('img').value = '';
-      document.getElementById('link').value = '';
-      carregarProdutos(); // Atualiza a lista sozinho, Nando
+      limparForm();
+      carregarProdutos();
     } else {
       msg.textContent = 'Erro: ' + data.erro;
       msg.className = 'erro';
@@ -225,9 +251,60 @@ async function salvar() {
   }
 }
 
+function editarProduto(produto) {
+  editandoId = produto.id;
+  document.getElementById('titulo-form').textContent = '✏️ Editando Produto';
+  document.getElementById('nome').value = produto.nome;
+  document.getElementById('preco').value = produto.preco? `R$ ${parseFloat(produto.preco).toFixed(2).replace('.', ',')}` : '';
+  document.getElementById('img').value = produto.img;
+  document.getElementById('link').value = produto.link;
+  document.getElementById('btn-salvar').textContent = 'Atualizar Produto';
+  document.getElementById('btn-cancelar').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cancelarEdicao() {
+  limparForm();
+}
+
+function limparForm() {
+  editandoId = null;
+  document.getElementById('titulo-form').textContent = '📦 Cadastrar Produto';
+  document.getElementById('nome').value = '';
+  document.getElementById('preco').value = '';
+  document.getElementById('img').value = '';
+  document.getElementById('link').value = '';
+  document.getElementById('btn-salvar').textContent = 'Salvar no Supabase';
+  document.getElementById('btn-cancelar').style.display = 'none';
+  document.getElementById('msg').textContent = '';
+}
+
+async function excluirProduto(id, nome) {
+  if (!confirm(`Tem certeza que quer excluir "${nome}"? Nando, não tem volta hein! 😱`)) {
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/produtos/${id}`, {
+      method: 'DELETE'
+    });
+
+    if (res.ok) {
+      alert('Produto excluído com sucesso!');
+      carregarProdutos();
+    } else {
+      const data = await res.json();
+      alert('Erro ao excluir: ' + data.erro);
+    }
+  } catch (e) {
+    alert('Erro de conexão ao excluir');
+    console.log('Erro:', e);
+  }
+}
+
 async function carregarProdutos() {
   const tbody = document.getElementById('lista-produtos');
-  tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Buscando produtos...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Buscando produtos...</td></tr>';
 
   try {
     const res = await fetch('/api/produtos');
@@ -236,29 +313,34 @@ async function carregarProdutos() {
     if (!res.ok) throw new Error('Erro ao buscar');
 
     if (produtos.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Nenhum produto cadastrado ainda, Nando 😅</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Nenhum produto cadastrado ainda, Nando 😅</td></tr>';
       return;
     }
 
     tbody.innerHTML = '';
-    
+
     produtos.forEach(produto => {
       const dataFormatada = new Date(produto.criado_em).toLocaleDateString('pt-BR');
+      const precoFormatado = produto.preco? `R$ ${parseFloat(produto.preco).toFixed(2).replace('.', ',')}` : 'Sem preço';
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${produto.id}</td>
         <td><img src="${produto.img}" class="img-mini" onerror="this.src='https://via.placeholder.com/60?text=Erro'"></td>
         <td>${produto.nome}</td>
-        <td>${produto.preco || 'Sem preço'}</td>
+        <td>${precoFormatado}</td>
         <td><a href="${produto.link}" target="_blank">Abrir</a></td>
         <td>${dataFormatada}</td>
+        <td class="acoes">
+          <button class="btn-editar" onclick='editarProduto(${JSON.stringify(produto)})'>Editar</button>
+          <button class="btn-excluir" onclick="excluirProduto(${produto.id}, '${produto.nome}')">Excluir</button>
+        </td>
       `;
       tbody.appendChild(tr);
     });
 
   } catch (error) {
     console.error('Deu ruim ao buscar:', error);
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Nando, cê meteu o louco aqui ó: erro ao carregar 😂</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Nando, cê meteu o louco aqui ó: erro ao carregar 😂</td></tr>';
   }
 }
 </script>
