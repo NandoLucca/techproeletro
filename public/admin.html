@@ -1,179 +1,163 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - TechProEletro</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #0f172a; color: #e2e8f0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px 0; }
-       .login-box,.painel { background: #1e293b; padding: 40px; border-radius: 12px; width: 90%; max-width: 500px; border: 1px solid #334155; }
-       .painel { max-width: 900px; display: none; }
-        h1 { margin-bottom: 20px; text-align: center; color: #f1f5f9; }
-        h1 span { color: #3b82f6; }
-        input { width: 100%; padding: 12px; margin-bottom: 15px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #e2e8f0; font-size: 16px; }
-        button { padding: 10px 16px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; }
-        button:hover { background: #2563eb; }
-       .btn-add { width: 100%; padding: 12px; font-size: 16px; }
-       .btn-del { background: #ef4444; }
-       .btn-del:hover { background: #dc2626; }
-       .btn-edit { background: #eab308; margin-right: 8px; }
-       .btn-edit:hover { background: #ca8a04; }
-       .erro { color: #ef4444; text-align: center; margin-top: 10px; }
-       .aviso { background: #1e3a8a; border: 1px solid #3b82f6; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-       .form-add { background: #0f172a; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-       .form-add h3 { margin-bottom: 15px; color: #3b82f6; }
-       .produto-item { background: #0f172a; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155; }
-       .produto-info { flex: 1; margin-right: 15px; }
-       .produto-actions { display: flex; }
-       .produto-item img { border-radius: 6px; margin-right: 15px; width: 80px; height: 80px; object-fit: cover; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - TechProEletro</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', Arial, sans-serif; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      padding: 20px;
+    }
+  .container { 
+      background: white; 
+      padding: 40px; 
+      border-radius: 15px; 
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      width: 100%; 
+      max-width: 450px; 
+    }
+    h2 { 
+      color: #333; 
+      margin-bottom: 25px; 
+      text-align: center;
+      font-size: 28px;
+    }
+    input { 
+      width: 100%; 
+      padding: 14px; 
+      margin: 8px 0; 
+      border: 2px solid #e0e0e0; 
+      border-radius: 8px; 
+      font-size: 15px;
+      transition: 0.3s;
+    }
+    input:focus { 
+      outline: none; 
+      border-color: #667eea; 
+    }
+    button { 
+      width: 100%; 
+      padding: 14px; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white; 
+      border: none; 
+      border-radius: 8px; 
+      font-size: 16px; 
+      font-weight: bold;
+      cursor: pointer; 
+      margin-top: 10px;
+      transition: 0.3s;
+    }
+    button:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    #formulario { display: none; }
+    #msg { 
+      margin-top: 15px; 
+      text-align: center; 
+      font-weight: bold;
+      min-height: 20px;
+    }
+  .sucesso { color: #28a745; }
+  .erro { color: #dc3545; }
+    label { 
+      display: block; 
+      margin-top: 10px; 
+      color: #555; 
+      font-weight: 600;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
-    <div class="login-box" id="loginBox">
-        <h1>TechProEletro <span>Admin</span></h1>
-        <input type="password" id="senha" placeholder="Digite a senha" />
-        <button class="btn-add" onclick="fazerLogin()">Entrar</button>
-        <div class="erro" id="erro"></div>
+  <div class="container">
+    <div id="login">
+      <h2>🔐 Painel Admin</h2>
+      <input type="password" id="senha" placeholder="Digite sua senha">
+      <button onclick="entrar()">Entrar</button>
     </div>
 
-    <div class="painel" id="painel">
-        <h1>Painel <span>TechProEletro</span></h1>
-        <div class="aviso">
-            <strong>✅ Painel com Editar e Deletar</strong><br>
-            Gerencie seus produtos. Mudanças aparecem na home na hora.
-        </div>
-
-        <div class="form-add">
-            <h3 id="formTitulo">Adicionar Produto</h3>
-            <input type="hidden" id="editId" />
-            <input type="text" id="nome" placeholder="Nome do produto" />
-            <input type="text" id="preco" placeholder="Preço: 299.00" />
-            <input type="text" id="img" placeholder="URL da imagem" />
-            <input type="text" id="link" placeholder="Link de afiliado Amazon" />
-            <button class="btn-add" id="btnSalvar" onclick="salvarProduto()">Adicionar Produto</button>
-            <button class="btn-add" id="btnCancelar" onclick="cancelarEdicao()" style="display:none; background:#64748b; margin-top:10px;">Cancelar</button>
-        </div>
-
-        <h3>Produtos cadastrados:</h3>
-        <div id="listaProdutos"></div>
+    <div id="formulario">
+      <h2>📦 Cadastrar Produto</h2>
+      <label>Nome do produto</label>
+      <input type="text" id="nome" placeholder="Ex: Notebook Gamer">
+      
+      <label>Preço</label>
+      <input type="text" id="preco" placeholder="Ex: R$ 2.999,90">
+      
+      <label>Link da imagem</label>
+      <input type="text" id="img" placeholder="https://...">
+      
+      <label>Link de afiliado</label>
+      <input type="text" id="link" placeholder="https://...">
+      
+      <button onclick="salvar()">Salvar no Supabase</button>
+      <p id="msg"></p>
     </div>
+  </div>
 
-    <script>
-        async function fazerLogin() {
-            const senha = document.getElementById('senha').value;
-            const erroDiv = document.getElementById('erro');
-            
-            try {
-                const resposta = await fetch('/admin/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ senha })
-                });
-                
-                const dados = await resposta.json();
-                
-                if (dados.success) {
-                    document.getElementById('loginBox').style.display = 'none';
-                    document.getElementById('painel').style.display = 'block';
-                    carregarProdutos();
-                } else {
-                    erroDiv.textContent = 'Senha incorreta!';
-                }
-            } catch (error) {
-                erroDiv.textContent = 'Erro ao conectar.';
-            }
-        }
+<script>
+function entrar() {
+  const senhaDigitada = document.getElementById('senha').value.trim();
+  
+  if (senhaDigitada === 'techpro2026') {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('formulario').style.display = 'block';
+  } else {
+    alert('Senha incorreta! Você digitou: [' + senhaDigitada + ']');
+  }
+}
 
-        async function carregarProdutos() {
-            const resposta = await fetch('/api/produtos');
-            const produtos = await resposta.json();
-            const lista = document.getElementById('listaProdutos');
-            
-            lista.innerHTML = '';
-            produtos.forEach(p => {
-                lista.innerHTML += `
-                    <div class="produto-item">
-                        <img src="${p.img}" alt="${p.nome}">
-                        <div class="produto-info">
-                            <strong>${p.nome}</strong><br>
-                            R$ ${p.preco}<br>
-                            <small style="color:#64748b; word-break: break-all;">${p.link}</small>
-                        </div>
-                        <div class="produto-actions">
-                            <button class="btn-edit" onclick="editarProduto(${p.id}, '${p.nome}', '${p.preco}', '${p.img}', '${p.link}')">Editar</button>
-                            <button class="btn-del" onclick="deletarProduto(${p.id})">Deletar</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        async function salvarProduto() {
-            const id = document.getElementById('editId').value;
-            const nome = document.getElementById('nome').value;
-            const preco = document.getElementById('preco').value;
-            const img = document.getElementById('img').value;
-            const link = document.getElementById('link').value;
-
-            if (!nome ||!preco ||!img ||!link) {
-                alert('Preenche todos os campos');
-                return;
-            }
-
-            const produto = { nome, preco, img, link };
-
-            if (id) {
-                await fetch(`/api/produtos/${id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(produto)
-                });
-            } else {
-                await fetch('/api/produtos', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(produto)
-                });
-            }
-
-            cancelarEdicao();
-            carregarProdutos();
-        }
-
-        function editarProduto(id, nome, preco, img, link) {
-            document.getElementById('formTitulo').textContent = 'Editar Produto';
-            document.getElementById('editId').value = id;
-            document.getElementById('nome').value = nome;
-            document.getElementById('preco').value = preco;
-            document.getElementById('img').value = img;
-            document.getElementById('link').value = link;
-            document.getElementById('btnSalvar').textContent = 'Salvar Alterações';
-            document.getElementById('btnCancelar').style.display = 'block';
-            window.scrollTo(0, 0);
-        }
-
-        function cancelarEdicao() {
-            document.getElementById('formTitulo').textContent = 'Adicionar Produto';
-            document.getElementById('editId').value = '';
-            document.getElementById('nome').value = '';
-            document.getElementById('preco').value = '';
-            document.getElementById('img').value = '';
-            document.getElementById('link').value = '';
-            document.getElementById('btnSalvar').textContent = 'Adicionar Produto';
-            document.getElementById('btnCancelar').style.display = 'none';
-        }
-
-        async function deletarProduto(id) {
-            if (!confirm('Tem certeza que quer deletar este produto?')) return;
-            
-            await fetch(`/api/produtos/${id}`, { method: 'DELETE' });
-            carregarProdutos();
-        }
-
-        document.getElementById('senha').addEventListener('keypress', e => {
-            if (e.key === 'Enter') fazerLogin();
-        });
-    </script>
+async function salvar() {
+  const produto = {
+    nome: document.getElementById('nome').value,
+    preco: document.getElementById('preco').value,
+    img: document.getElementById('img').value,
+    link: document.getElementById('link').value
+  };
+  
+  const msg = document.getElementById('msg');
+  
+  if (!produto.nome ||!produto.img ||!produto.link) {
+    msg.textContent = 'Preenche nome, imagem e link';
+    msg.className = 'erro';
+    return;
+  }
+  
+  msg.textContent = 'Salvando no banco...';
+  msg.className = '';
+  
+  try {
+    const res = await fetch('/api/produtos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(produto)
+    });
+    
+    if (res.ok) {
+      msg.textContent = 'Produto salvo no Supabase! ✅';
+      msg.className = 'sucesso';
+      document.getElementById('nome').value = '';
+      document.getElementById('preco').value = '';
+      document.getElementById('img').value = '';
+      document.getElementById('link').value = '';
+    } else {
+      msg.textContent = 'Erro ao salvar';
+      msg.className = 'erro';
+    }
+  } catch (e) {
+    msg.textContent = 'Erro de conexão';
+    msg.className = 'erro';
+  }
+}
+</script>
 </body>
 </html>
