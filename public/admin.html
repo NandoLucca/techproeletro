@@ -4,345 +4,296 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin - TechProEletro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Segoe UI', Arial, sans-serif;
+      font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       padding: 20px;
     }
-   .container {
-      background: white;
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-      width: 100%;
-      max-width: 1100px;
+  .container {
+      max-width: 1200px;
       margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 32px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
     h2 {
-      color: #333;
-      margin-bottom: 25px;
       text-align: center;
-      font-size: 28px;
+      margin: 40px 0 20px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    form {
+      background: #f8f9fa;
+      padding: 30px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+      font-size: 14px;
     }
     input {
       width: 100%;
-      padding: 14px;
-      margin: 8px 0;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      background: white;
       border: 2px solid #e0e0e0;
       border-radius: 8px;
+      color: #333;
       font-size: 15px;
+      transition: all 0.3s;
     }
     input:focus {
       outline: none;
       border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
-    button {
+    button[type="submit"] {
       width: 100%;
-      padding: 14px;
+      padding: 15px;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       border: none;
       border-radius: 8px;
-      font-size: 16px;
-      font-weight: bold;
       cursor: pointer;
-      margin-top: 10px;
+      font-weight: 700;
+      font-size: 16px;
+      transition: all 0.3s;
     }
-    button:hover {
+    button[type="submit"]:hover {
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
     }
-    button.btn-menor {
-      background: #6c757d;
-      width: auto;
+  .divider {
+      height: 1px;
+      background: #e0e0e0;
+      margin: 30px 0;
+    }
+  .btn-atualizar {
       padding: 10px 20px;
-      margin-bottom: 15px;
-      margin-right: 10px;
-    }
-    button.btn-editar {
-      background: #ffc107;
-      color: #000;
-      padding: 6px 12px;
-      font-size: 14px;
-      width: auto;
-      margin: 0 5px 0 0;
-    }
-    button.btn-excluir {
-      background: #dc3545;
-      padding: 6px 12px;
-      font-size: 14px;
-      width: auto;
-      margin: 0;
-    }
-    button.btn-cancelar {
-      background: #6c757d;
-      margin-top: 10px;
-    }
-    #formulario { display: none; }
-    #msg {
-      margin-top: 15px;
-      text-align: center;
-      font-weight: bold;
-      min-height: 20px;
-    }
-   .sucesso { color: #28a745; }
-   .erro { color: #dc3545; }
-    label {
-      display: block;
-      margin-top: 10px;
-      color: #555;
-      font-weight: 600;
-      font-size: 14px;
-    }
-    hr {
-      margin: 40px 0;
+      background: #4a5568;
+      color: white;
       border: none;
-      border-top: 2px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
-   .tabela-wrapper {
-      overflow-x: auto;
-      margin-top: 15px;
-    }
+  .btn-atualizar:hover { background: #2d3748; }
     table {
       width: 100%;
       border-collapse: collapse;
-    }
-    th, td {
-      padding: 12px;
-      text-align: left;
-      border-bottom: 1px solid #e0e0e0;
+      background: white;
     }
     th {
       background: #f8f9fa;
-      color: #333;
+      padding: 12px;
+      text-align: left;
       font-weight: 600;
-      white-space: nowrap;
+      color: #333;
+      border-bottom: 2px solid #e0e0e0;
+      font-size: 14px;
     }
-    tr:hover {
-      background: #f8f9fa;
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #e0e0e0;
+      color: #333;
+      font-size: 14px;
     }
-   .img-mini {
+  .produto-img {
       width: 60px;
       height: 60px;
-      object-fit: cover;
+      object-fit: contain;
+      background: #f8f9fa;
       border-radius: 8px;
-      border: 1px solid #ddd;
+      padding: 5px;
     }
-    #login { max-width: 450px; margin: 0 auto; }
-   .acoes { white-space: nowrap; }
+  .categoria-tag {
+      display: inline-block;
+      background: #667eea;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  .acoes {
+      display: flex;
+      gap: 8px;
+    }
+  .btn-editar {
+      padding: 6px 15px;
+      background: #f6ad55;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+    }
+  .btn-excluir {
+      padding: 6px 15px;
+      background: #f56565;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+    }
+  .btn-editar:hover { background: #ed8936; }
+  .btn-excluir:hover { background: #e53e3e; }
+    a { color: #667eea; text-decoration: none; font-weight: 600; }
+    a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
   <div class="container">
-    <div id="login">
-      <h2>🔐 Painel Admin</h2>
-      <input type="password" id="senha" placeholder="Digite sua senha">
-      <button onclick="entrar()">Entrar</button>
-    </div>
+    <h1>📦 Cadastrar Produto</h1>
 
-    <div id="formulario">
-      <h2 id="titulo-form">📦 Cadastrar Produto</h2>
-      <input type="hidden" id="produto-id">
-
+    <form id="formProduto">
       <label>Nome do produto</label>
-      <input type="text" id="nome" placeholder="Ex: Notebook Gamer">
-
+      <input type="text" id="nome" placeholder="Ex: Notebook Gamer" required>
+      
       <label>Preço</label>
-      <input type="text" id="preco" placeholder="Ex: R$ 2.999,90">
-
+      <input type="text" id="preco" placeholder="Ex: R$ 2.999,90" required>
+      
       <label>Link da imagem</label>
-      <input type="text" id="img" placeholder="https://...">
-
+      <input type="text" id="img" placeholder="https://..." required>
+      
       <label>Link de afiliado</label>
-      <input type="text" id="link" placeholder="https://...">
+      <input type="text" id="link" placeholder="https://..." required>
+      
+      <label>Categoria</label>
+      <input type="text" id="categoria" placeholder="Ex: Eletrônicos, Roupas, Casa" required>
+      
+      <button type="submit">Salvar no Supabase</button>
+    </form>
 
-      <button id="btn-salvar" onclick="salvar()">Salvar no Supabase</button>
-      <button id="btn-cancelar" class="btn-cancelar" onclick="cancelarEdicao()" style="display:none;">Cancelar Edição</button>
-      <p id="msg"></p>
+    <div class="divider"></div>
 
-      <hr>
+    <h2>📋 Produtos Cadastrados</h2>
+    <button class="btn-atualizar" onclick="carregarProdutos()">🔄 Atualizar Lista</button>
 
-      <h2>📋 Produtos Cadastrados</h2>
-      <button class="btn-menor" onclick="carregarProdutos()">🔄 Atualizar Lista</button>
-
-      <div class="tabela-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Imagem</th>
-              <th>Nome</th>
-              <th>Preço</th>
-              <th>Link</th>
-              <th>Criado em</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody id="lista-produtos">
-            <tr><td colspan="7" style="text-align: center;">Carregando...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Imagem</th>
+          <th>Nome</th>
+          <th>Categoria</th>
+          <th>Preço</th>
+          <th>Link</th>
+          <th>Criado em</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="listaProdutos"></tbody>
+    </table>
   </div>
 
 <script>
-let editandoId = null;
-
-function entrar() {
-  const senhaDigitada = document.getElementById('senha').value.trim();
-  if (senhaDigitada === 'techpro2026') {
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('formulario').style.display = 'block';
-    carregarProdutos();
-  } else {
-    alert('Senha incorreta! Você digitou: [' + senhaDigitada + ']');
-  }
-}
-
-async function salvar() {
-  const produto = {
-    nome: document.getElementById('nome').value,
-    preco: document.getElementById('preco').value,
-    img: document.getElementById('img').value,
-    link: document.getElementById('link').value
-  };
-
-  const msg = document.getElementById('msg');
-
-  if (!produto.nome ||!produto.img ||!produto.link) {
-    msg.textContent = 'Preenche nome, imagem e link, meu consagrado';
-    msg.className = 'erro';
-    return;
-  }
-
-  msg.textContent = editandoId? 'Atualizando...' : 'Salvando no banco...';
-  msg.className = '';
-
-  try {
-    const url = editandoId? `/api/produtos/${editandoId}` : '/api/produtos';
-    const method = editandoId? 'PUT' : 'POST';
-
-    const res = await fetch(url, {
-      method: method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(produto)
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      msg.textContent = editandoId? 'Produto atualizado! ✅' : 'Produto salvo no Supabase! ✅';
-      msg.className = 'sucesso';
-      limparForm();
-      carregarProdutos();
-    } else {
-      msg.textContent = 'Erro: ' + data.erro;
-      msg.className = 'erro';
-      console.log('Erro Supabase:', data);
-    }
-  } catch (e) {
-    msg.textContent = 'Erro de conexão com servidor';
-    msg.className = 'erro';
-    console.log('Erro fetch:', e);
-  }
-}
-
-function editarProduto(produto) {
-  editandoId = produto.id;
-  document.getElementById('titulo-form').textContent = '✏️ Editando Produto';
-  document.getElementById('nome').value = produto.nome;
-  document.getElementById('preco').value = produto.preco? `R$ ${parseFloat(produto.preco).toFixed(2).replace('.', ',')}` : '';
-  document.getElementById('img').value = produto.img;
-  document.getElementById('link').value = produto.link;
-  document.getElementById('btn-salvar').textContent = 'Atualizar Produto';
-  document.getElementById('btn-cancelar').style.display = 'block';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function cancelarEdicao() {
-  limparForm();
-}
-
-function limparForm() {
-  editandoId = null;
-  document.getElementById('titulo-form').textContent = '📦 Cadastrar Produto';
-  document.getElementById('nome').value = '';
-  document.getElementById('preco').value = '';
-  document.getElementById('img').value = '';
-  document.getElementById('link').value = '';
-  document.getElementById('btn-salvar').textContent = 'Salvar no Supabase';
-  document.getElementById('btn-cancelar').style.display = 'none';
-  document.getElementById('msg').textContent = '';
-}
-
-async function excluirProduto(id, nome) {
-  if (!confirm(`Tem certeza que quer excluir "${nome}"? Nando, não tem volta hein! 😱`)) {
-    return;
-  }
-
-  try {
-    const res = await fetch(`/api/produtos/${id}`, {
-      method: 'DELETE'
-    });
-
-    if (res.ok) {
-      alert('Produto excluído com sucesso!');
-      carregarProdutos();
-    } else {
-      const data = await res.json();
-      alert('Erro ao excluir: ' + data.erro);
-    }
-  } catch (e) {
-    alert('Erro de conexão ao excluir');
-    console.log('Erro:', e);
-  }
-}
+const form = document.getElementById('formProduto');
+const lista = document.getElementById('listaProdutos');
 
 async function carregarProdutos() {
-  const tbody = document.getElementById('lista-produtos');
-  tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Buscando produtos...</td></tr>';
+  const res = await fetch('/api/produtos');
+  const produtos = await res.json();
 
-  try {
-    const res = await fetch('/api/produtos');
-    const produtos = await res.json();
-
-    if (!res.ok) throw new Error('Erro ao buscar');
-
-    if (produtos.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Nenhum produto cadastrado ainda, Nando 😅</td></tr>';
-      return;
-    }
-
-    tbody.innerHTML = '';
-
-    produtos.forEach(produto => {
-      const dataFormatada = new Date(produto.criado_em).toLocaleDateString('pt-BR');
-      const precoFormatado = produto.preco? `R$ ${parseFloat(produto.preco).toFixed(2).replace('.', ',')}` : 'Sem preço';
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${produto.id}</td>
-        <td><img src="${produto.img}" class="img-mini" onerror="this.src='https://via.placeholder.com/60?text=Erro'"></td>
-        <td>${produto.nome}</td>
+  lista.innerHTML = '';
+  produtos.forEach(p => {
+    const precoFormatado = p.preco? `R$ ${parseFloat(p.preco).toFixed(2).replace('.', ',')}` : 'Consulte';
+    const dataFormatada = p.criado_em? new Date(p.criado_em).toLocaleDateString('pt-BR') : '-';
+    
+    lista.innerHTML += `
+      <tr>
+        <td>${p.id}</td>
+        <td><img src="${p.img}" class="produto-img" alt="${p.nome}" onerror="this.src='https://via.placeholder.com/60/667eea/ffffff?text=X'"></td>
+        <td><strong>${p.nome}</strong></td>
+        <td><span class="categoria-tag">${p.categoria || 'Geral'}</span></td>
         <td>${precoFormatado}</td>
-        <td><a href="${produto.link}" target="_blank">Abrir</a></td>
+        <td><a href="${p.link}" target="_blank">Abrir</a></td>
         <td>${dataFormatada}</td>
-        <td class="acoes">
-          <button class="btn-editar" onclick='editarProduto(${JSON.stringify(produto)})'>Editar</button>
-          <button class="btn-excluir" onclick="excluirProduto(${produto.id}, '${produto.nome}')">Excluir</button>
+        <td>
+          <div class="acoes">
+            <button class="btn-editar" onclick="editarProduto(${p.id}, '${p.nome}', '${p.preco}', '${p.img}', '${p.link}', '${p.categoria || 'Geral'}')">Editar</button>
+            <button class="btn-excluir" onclick="excluirProduto(${p.id})">Excluir</button>
+          </div>
         </td>
-      `;
-      tbody.appendChild(tr);
-    });
+      </tr>
+    `;
+  });
+}
 
-  } catch (error) {
-    console.error('Deu ruim ao buscar:', error);
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Nando, cê meteu o louco aqui ó: erro ao carregar 😂</td></tr>';
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const nome = document.getElementById('nome').value;
+  const preco = document.getElementById('preco').value;
+  const img = document.getElementById('img').value;
+  const link = document.getElementById('link').value;
+  const categoria = document.getElementById('categoria').value;
+
+  await fetch('/api/produtos', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome, preco, img, link, categoria })
+  });
+
+  form.reset();
+  carregarProdutos();
+});
+
+async function editarProduto(id, nomeAtual, precoAtual, imgAtual, linkAtual, categoriaAtual) {
+  const nome = prompt('Nome:', nomeAtual);
+  if (!nome) return;
+  
+  const preco = prompt('Preço:', precoAtual);
+  const img = prompt('Imagem:', imgAtual);
+  const link = prompt('Link:', linkAtual);
+  const categoria = prompt('Categoria:', categoriaAtual);
+
+  if (nome && img && link) {
+    await fetch(`/api/produtos/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nome, preco, img, link, categoria })
+    });
+    carregarProdutos();
   }
 }
+
+async function excluirProduto(id) {
+  if (confirm('Tem certeza que quer excluir esse produto?')) {
+    await fetch(`/api/produtos/${id}`, { method: 'DELETE' });
+    carregarProdutos();
+  }
+}
+
+carregarProdutos();
 </script>
 </body>
 </html>
