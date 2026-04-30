@@ -3,15 +3,17 @@ const { createClient } = require('@supabase/supabase-js');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Middleware pra ler JSON e servir arquivos da pasta public
 app.use(express.json());
 app.use(express.static('public'));
 
+// Conecta no Supabase - pega as chaves do Render
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_KEY
 );
 
-// GET: Pega todos os produtos
+// API: Pega todos os produtos do banco
 app.get('/api/produtos', async (req, res) => {
   const { data, error } = await supabase
    .from('produtos')
@@ -25,7 +27,7 @@ app.get('/api/produtos', async (req, res) => {
   res.json(data);
 });
 
-// POST: Salva produto novo
+// API: Salva produto novo no banco
 app.post('/api/produtos', async (req, res) => {
   let { nome, preco, img, link } = req.body;
 
@@ -50,7 +52,7 @@ app.post('/api/produtos', async (req, res) => {
   res.status(201).json(data[0]);
 });
 
-// PUT: Edita produto existente
+// API: Edita produto existente
 app.put('/api/produtos/:id', async (req, res) => {
   const { id } = req.params;
   let { nome, preco, img, link } = req.body;
@@ -72,7 +74,7 @@ app.put('/api/produtos/:id', async (req, res) => {
   res.json(data[0]);
 });
 
-// DELETE: Exclui produto
+// API: Exclui produto
 app.delete('/api/produtos/:id', async (req, res) => {
   const { id } = req.params;
 
@@ -86,6 +88,11 @@ app.delete('/api/produtos/:id', async (req, res) => {
     return res.status(500).json({ erro: error.message });
   }
   res.json({ mensagem: 'Produto deletado com sucesso' });
+});
+
+// ROTA PRINCIPAL: Serve a vitrine - ISSO QUE TAVA FALTANDO, NANDO!
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
 });
 
 app.listen(port, () => console.log(`Servidor rodando suave na porta ${port}`));
