@@ -10,18 +10,16 @@
       font-family: 'Segoe UI', Arial, sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       padding: 20px;
     }
- .container {
+    .container {
       background: white;
       padding: 40px;
       border-radius: 15px;
       box-shadow: 0 10px 40px rgba(0,0,0,0.2);
       width: 100%;
-      max-width: 450px;
+      max-width: 1000px;
+      margin: 0 auto;
     }
     h2 {
       color: #333;
@@ -57,6 +55,12 @@
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
     }
+    button.btn-menor {
+      background: #6c757d;
+      width: auto;
+      padding: 10px 20px;
+      margin-bottom: 15px;
+    }
     #formulario { display: none; }
     #msg {
       margin-top: 15px;
@@ -64,8 +68,8 @@
       font-weight: bold;
       min-height: 20px;
     }
- .sucesso { color: #28a745; }
- .erro { color: #dc3545; }
+    .sucesso { color: #28a745; }
+    .erro { color: #dc3545; }
     label {
       display: block;
       margin-top: 10px;
@@ -73,6 +77,41 @@
       font-weight: 600;
       font-size: 14px;
     }
+    hr {
+      margin: 40px 0;
+      border: none;
+      border-top: 2px solid #e0e0e0;
+    }
+    .tabela-wrapper {
+      overflow-x: auto;
+      margin-top: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    th {
+      background: #f8f9fa;
+      color: #333;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    tr:hover {
+      background: #f8f9fa;
+    }
+    .img-mini {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+    #login { max-width: 450px; margin: 0 auto; }
   </style>
 </head>
 <body>
@@ -99,6 +138,29 @@
 
       <button onclick="salvar()">Salvar no Supabase</button>
       <p id="msg"></p>
+
+      <hr>
+
+      <h2>📋 Produtos Cadastrados</h2>
+      <button class="btn-menor" onclick="carregarProdutos()">🔄 Atualizar Lista</button>
+      
+      <div class="tabela-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Imagem</th>
+              <th>Nome</th>
+              <th>Preço</th>
+              <th>Link</th>
+              <th>Criado em</th>
+            </tr>
+          </thead>
+          <tbody id="lista-produtos">
+            <tr><td colspan="6" style="text-align: center;">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -109,6 +171,7 @@ function entrar() {
   if (senhaDigitada === 'techpro2026') {
     document.getElementById('login').style.display = 'none';
     document.getElementById('formulario').style.display = 'block';
+    carregarProdutos(); // Já puxa a lista quando loga
   } else {
     alert('Senha incorreta! Você digitou: [' + senhaDigitada + ']');
   }
@@ -124,7 +187,7 @@ async function salvar() {
 
   const msg = document.getElementById('msg');
 
-  if (!produto.nome ||!produto.img ||!produto.link) {
+  if (!produto.nome || !produto.img || !produto.link) {
     msg.textContent = 'Preenche nome, imagem e link, meu consagrado';
     msg.className = 'erro';
     return;
@@ -149,6 +212,7 @@ async function salvar() {
       document.getElementById('preco').value = '';
       document.getElementById('img').value = '';
       document.getElementById('link').value = '';
+      carregarProdutos(); // Atualiza a lista sozinho, Nando
     } else {
       msg.textContent = 'Erro: ' + data.erro;
       msg.className = 'erro';
@@ -158,6 +222,43 @@ async function salvar() {
     msg.textContent = 'Erro de conexão com servidor';
     msg.className = 'erro';
     console.log('Erro fetch:', e);
+  }
+}
+
+async function carregarProdutos() {
+  const tbody = document.getElementById('lista-produtos');
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Buscando produtos...</td></tr>';
+
+  try {
+    const res = await fetch('/api/produtos');
+    const produtos = await res.json();
+
+    if (!res.ok) throw new Error('Erro ao buscar');
+
+    if (produtos.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Nenhum produto cadastrado ainda, Nando 😅</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = '';
+    
+    produtos.forEach(produto => {
+      const dataFormatada = new Date(produto.criado_em).toLocaleDateString('pt-BR');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${produto.id}</td>
+        <td><img src="${produto.img}" class="img-mini" onerror="this.src='https://via.placeholder.com/60?text=Erro'"></td>
+        <td>${produto.nome}</td>
+        <td>${produto.preco || 'Sem preço'}</td>
+        <td><a href="${produto.link}" target="_blank">Abrir</a></td>
+        <td>${dataFormatada}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+  } catch (error) {
+    console.error('Deu ruim ao buscar:', error);
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Nando, cê meteu o louco aqui ó: erro ao carregar 😂</td></tr>';
   }
 }
 </script>
