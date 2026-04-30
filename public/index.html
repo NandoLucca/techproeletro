@@ -4,6 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TechProEletro - Ofertas Exclusivas</title>
+  
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NHGZMX15YK"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-NHGZMX15YK');
+  </script>
+  <!-- Fim Google Analytics -->
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -22,7 +33,7 @@
       z-index: 100;
       backdrop-filter: blur(20px);
       background: rgba(15, 12, 41, 0.8);
-      border-bottom: 1px solid rgba(255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       padding: 25px 20px;
     }
  .header-content {
@@ -71,7 +82,7 @@
       border-color: #667eea;
       box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
     }
- .search-box input::placeholder { color: rgba(255, 255, 0.5); }
+ .search-box input::placeholder { color: rgba(255, 255, 255, 0.5); }
  .search-icon {
       position: absolute;
       right: 15px;
@@ -271,14 +282,14 @@
       text-align: center;
       padding: 35px 20px;
       margin-top: 80px;
-      border-top: 1px solid rgba(255, 255, 0.1);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
     footer p {
       opacity: 0.6;
       font-size: 14px;
       font-weight: 400;
     }
-    footer.copyright {
+    footer .copyright {
       font-weight: 500;
       margin-bottom: 8px;
       opacity: 0.8;
@@ -342,11 +353,11 @@ async function carregarVitrine() {
   }
 
   // Gera abas dinamicamente
-  const categorias = ['destaques',...new Set(todosProdutos.map(p => p.categoria || 'Geral'))];
+  const categorias = ['destaques', ...new Set(todosProdutos.map(p => p.categoria || 'Geral'))];
   const tabsDiv = document.getElementById('tabs');
   tabsDiv.innerHTML = categorias.map(cat =>
-    `<button class="tab ${cat === 'destaques'? 'ativo' : ''}" data-categoria="${cat}">
-      ${cat === 'destaques'? '⭐ Destaques' : cat}
+    `<button class="tab ${cat === 'destaques' ? 'ativo' : ''}" data-categoria="${cat}">
+      ${cat === 'destaques' ? '⭐ Destaques' : cat}
     </button>`
   ).join('');
 
@@ -375,14 +386,14 @@ function renderizarSecao() {
 
   container.innerHTML = `
     <h3 class="section-title">
-      ${categoriaAtual === 'destaques'? '⭐ Ofertas em Destaque' : `📦 ${categoriaAtual}`}
+      ${categoriaAtual === 'destaques' ? '⭐ Ofertas em Destaque' : `📦 ${categoriaAtual}`}
     </h3>
     <div class="grid" id="gridProdutos"></div>
   `;
 
   const grid = document.getElementById('gridProdutos');
   produtosFiltrados.forEach((produto, index) => {
-    const precoFormatado = produto.preco?
+    const precoFormatado = produto.preco ?
       `R$ ${parseFloat(produto.preco).toFixed(2).replace('.', ',')}` :
       'Consulte';
 
@@ -398,7 +409,16 @@ function renderizarSecao() {
       <div class="card-body">
         <h3>${produto.nome}</h3>
         <div class="preco">${precoFormatado}</div>
-        <a href="${produto.link}" target="_blank" class="btn-comprar">COMPRAR AGORA</a>
+        <a href="${produto.link}" 
+           target="_blank" 
+           class="btn-comprar"
+           onclick="gtag('event', 'clique_afiliado', {
+             'nome_produto': '${produto.nome.replace(/'/g, "\\'")}',
+             'categoria': '${produto.categoria || 'Geral'}',
+             'preco': '${produto.preco}'
+           });">
+           COMPRAR AGORA
+        </a>
       </div>
     `;
     grid.appendChild(card);
@@ -441,7 +461,7 @@ function ativarBusca() {
     }
 
     resultados.forEach((produto, index) => {
-      const precoFormatado = produto.preco?
+      const precoFormatado = produto.preco ?
         `R$ ${parseFloat(produto.preco).toFixed(2).replace('.', ',')}` :
         'Consulte';
 
@@ -457,7 +477,16 @@ function ativarBusca() {
         <div class="card-body">
           <h3>${produto.nome}</h3>
           <div class="preco">${precoFormatado}</div>
-          <a href="${produto.link}" target="_blank" class="btn-comprar">COMPRAR AGORA</a>
+          <a href="${produto.link}" 
+             target="_blank" 
+             class="btn-comprar"
+             onclick="gtag('event', 'clique_afiliado', {
+               'nome_produto': '${produto.nome.replace(/'/g, "\\'")}',
+               'categoria': '${produto.categoria || 'Geral'}',
+               'preco': '${produto.preco}'
+             });">
+             COMPRAR AGORA
+          </a>
         </div>
       `;
       grid.appendChild(card);
