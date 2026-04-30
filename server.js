@@ -1,34 +1,53 @@
 const express = require("express");
+const fs = require("fs");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// TROCA A SENHA AQUI
 const ADMIN_PASSWORD = "techpro2026";
+const PRODUTOS_FILE = "./produtos.json";
 
 app.use(express.static(__dirname));
 app.use(express.json());
 
-// Rota principal
+// Carrega produtos do arquivo ou usa padrão
+function carregarProdutos() {
+  try {
+    return JSON.parse(fs.readFileSync(PRODUTOS_FILE));
+  } catch {
+    return [
+      { id: 1, nome: "Echo Dot 5ª Geração", preco: "299.00", img: "https://m.media-amazon.com/images/I/71xoR4A6q-L._AC_SL1000_.jpg", link: "https://amzn.to/seulink1" },
+      { id: 2, nome: "Samsung Galaxy A15", preco: "999.00", img: "https://m.media-amazon.com/images/I/51Vh4p4xj-L._AC_SL1000_.jpg", link: "https://amzn.to/seulink2" }
+    ];
+  }
+}
+
+// Salva produtos
+function salvarProdutos(produtos) {
+  fs.writeFileSync(PRODUTOS_FILE, JSON.stringify(produtos, null, 2));
+}
+
 app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"));
 
-// Rota de login CORRETA pro admin.html
 app.post("/admin/login", (req, res) => {
-  const { senha } = req.body; // ← agora pega "senha" e não "password"
-  
+  const { senha } = req.body;
   if (senha === ADMIN_PASSWORD) {
     res.json({ success: true });
   } else {
-    res.status(401).json({ success: false, message: "Senha incorreta" });
+    res.status(401).json({ success: false });
   }
 });
 
-// Rota pra listar produtos no painel
 app.get("/api/produtos", (req, res) => {
-  // Por enquanto retorna os 2 produtos fixos
-  res.json([
-    { nome: "Echo Dot 5ª Geração", preco: "299.00", img: "https://m.media-amazon.com/images/I/61u0y9W4jCL._AC_SL1000_.jpg" },
-    { nome: "Samsung Galaxy A15", preco: "999.00", img: "https://m.media-amazon.com/images/I/61L5QgP7iAL._AC_SL1500_.jpg" }
-  ]);
+  res.json(carregarProdutos());
+});
+
+// NOVA ROTA: Adicionar produto
+app.post("/api/produtos", (req, res) => {
+  const produtos = carregarProdutos();
+  const novoProduto = { id: Date.now(), ...req.body };
+  produtos.push(novoProduto);
+  salvarProdutos(produtos);
+  res.json({ success: true, produto: novoProduto });
 });
 
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
