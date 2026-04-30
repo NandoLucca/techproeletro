@@ -6,10 +6,9 @@ const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = "techpro2026";
 const PRODUTOS_FILE = "./produtos.json";
 
-app.use(express.static(__dirname));
+app.use(express.static("public")); // ← CORRIGIDO
 app.use(express.json());
 
-// Carrega produtos do arquivo ou usa padrão
 function carregarProdutos() {
   try {
     return JSON.parse(fs.readFileSync(PRODUTOS_FILE));
@@ -21,12 +20,11 @@ function carregarProdutos() {
   }
 }
 
-// Salva produtos
 function salvarProdutos(produtos) {
   fs.writeFileSync(PRODUTOS_FILE, JSON.stringify(produtos, null, 2));
 }
 
-app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"));
+app.get("/", (req, res) => res.sendFile(__dirname + "/public/index.html")); // ← CORRIGIDO
 
 app.post("/admin/login", (req, res) => {
   const { senha } = req.body;
@@ -41,7 +39,6 @@ app.get("/api/produtos", (req, res) => {
   res.json(carregarProdutos());
 });
 
-// NOVA ROTA: Adicionar produto
 app.post("/api/produtos", (req, res) => {
   const produtos = carregarProdutos();
   const novoProduto = { id: Date.now(), ...req.body };
