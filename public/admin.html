@@ -13,27 +13,17 @@
       min-height: 100vh;
       padding: 20px;
     }
-  .container {
-      max-width: 1200px;
+ .container {
+      max-width: 1300px;
       margin: 0 auto;
       background: white;
       border-radius: 20px;
       padding: 40px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     }
-    h1 {
+    h1, h2 {
       text-align: center;
       margin-bottom: 30px;
-      font-size: 32px;
-      color: #333;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-    h2 {
-      text-align: center;
-      margin: 40px 0 20px;
       color: #333;
       display: flex;
       align-items: center;
@@ -58,16 +48,25 @@
       padding: 12px 15px;
       margin-bottom: 20px;
       background: white;
-      border: 2px solid #e0e0e0;
+      border: 2px solid #e0e0;
       border-radius: 8px;
       color: #333;
       font-size: 15px;
-      transition: all 0.3s;
     }
     input:focus {
       outline: none;
       border-color: #667eea;
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+  .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+  .checkbox-wrapper input[type="checkbox"] {
+      width: auto;
+      margin: 0;
     }
     button[type="submit"] {
       width: 100%;
@@ -85,12 +84,8 @@
       transform: translateY(-2px);
       box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
     }
-  .divider {
-      height: 1px;
-      background: #e0e0e0;
-      margin: 30px 0;
-    }
-  .btn-atualizar {
+ .divider { height: 1px; background: #e0e0e0; margin: 30px 0; }
+ .btn-atualizar {
       padding: 10px 20px;
       background: #4a5568;
       color: white;
@@ -99,16 +94,8 @@
       cursor: pointer;
       font-weight: 600;
       margin-bottom: 20px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
     }
-  .btn-atualizar:hover { background: #2d3748; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-    }
+    table { width: 100%; border-collapse: collapse; }
     th {
       background: #f8f9fa;
       padding: 12px;
@@ -124,7 +111,7 @@
       color: #333;
       font-size: 14px;
     }
-  .produto-img {
+ .produto-img {
       width: 60px;
       height: 60px;
       object-fit: contain;
@@ -132,7 +119,7 @@
       border-radius: 8px;
       padding: 5px;
     }
-  .categoria-tag {
+ .categoria-tag {
       display: inline-block;
       background: #667eea;
       color: white;
@@ -141,11 +128,18 @@
       font-size: 12px;
       font-weight: 600;
     }
-  .acoes {
-      display: flex;
-      gap: 8px;
+ .badge-destaque {
+      display: inline-block;
+      background: #f6ad55;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-left: 5px;
     }
-  .btn-editar {
+ .acoes { display: flex; gap: 8px; }
+ .btn-editar {
       padding: 6px 15px;
       background: #f6ad55;
       color: white;
@@ -155,7 +149,7 @@
       font-weight: 600;
       font-size: 13px;
     }
-  .btn-excluir {
+ .btn-excluir {
       padding: 6px 15px;
       background: #f56565;
       color: white;
@@ -165,10 +159,7 @@
       font-weight: 600;
       font-size: 13px;
     }
-  .btn-editar:hover { background: #ed8936; }
-  .btn-excluir:hover { background: #e53e3e; }
     a { color: #667eea; text-decoration: none; font-weight: 600; }
-    a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -178,19 +169,24 @@
     <form id="formProduto">
       <label>Nome do produto</label>
       <input type="text" id="nome" placeholder="Ex: Notebook Gamer" required>
-      
+
       <label>Preço</label>
       <input type="text" id="preco" placeholder="Ex: R$ 2.999,90" required>
-      
+
       <label>Link da imagem</label>
       <input type="text" id="img" placeholder="https://..." required>
-      
+
       <label>Link de afiliado</label>
       <input type="text" id="link" placeholder="https://..." required>
-      
+
       <label>Categoria</label>
-      <input type="text" id="categoria" placeholder="Ex: Eletrônicos, Roupas, Casa" required>
-      
+      <input type="text" id="categoria" placeholder="Ex: Celulares, TVs, Áudio" required>
+
+      <div class="checkbox-wrapper">
+        <input type="checkbox" id="destaque">
+        <label for="destaque" style="margin: 0;">Marcar como Destaque na Home</label>
+      </div>
+
       <button type="submit">Salvar no Supabase</button>
     </form>
 
@@ -208,7 +204,6 @@
           <th>Categoria</th>
           <th>Preço</th>
           <th>Link</th>
-          <th>Criado em</th>
           <th>Ações</th>
         </tr>
       </thead>
@@ -227,25 +222,39 @@ async function carregarProdutos() {
   lista.innerHTML = '';
   produtos.forEach(p => {
     const precoFormatado = p.preco? `R$ ${parseFloat(p.preco).toFixed(2).replace('.', ',')}` : 'Consulte';
-    const dataFormatada = p.criado_em? new Date(p.criado_em).toLocaleDateString('pt-BR') : '-';
-    
-    lista.innerHTML += `
-      <tr>
-        <td>${p.id}</td>
-        <td><img src="${p.img}" class="produto-img" alt="${p.nome}" onerror="this.src='https://via.placeholder.com/60/667eea/ffffff?text=X'"></td>
-        <td><strong>${p.nome}</strong></td>
-        <td><span class="categoria-tag">${p.categoria || 'Geral'}</span></td>
-        <td>${precoFormatado}</td>
-        <td><a href="${p.link}" target="_blank">Abrir</a></td>
-        <td>${dataFormatada}</td>
-        <td>
-          <div class="acoes">
-            <button class="btn-editar" onclick="editarProduto(${p.id}, '${p.nome}', '${p.preco}', '${p.img}', '${p.link}', '${p.categoria || 'Geral'}')">Editar</button>
-            <button class="btn-excluir" onclick="excluirProduto(${p.id})">Excluir</button>
-          </div>
-        </td>
-      </tr>
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${p.id}</td>
+      <td><img src="${p.img}" class="produto-img" alt="${p.nome}" onerror="this.src='https://via.placeholder.com/60/667eea/ffffff?text=X'"></td>
+      <td>
+        <strong>${p.nome}</strong>
+        ${p.destaque? '<span class="badge-destaque">⭐ DESTAQUE</span>' : ''}
+      </td>
+      <td><span class="categoria-tag">${p.categoria || 'Geral'}</span></td>
+      <td>${precoFormatado}</td>
+      <td><a href="${p.link}" target="_blank">Abrir</a></td>
+      <td>
+        <div class="acoes">
+          <button class="btn-editar" data-produto='${JSON.stringify(p)}'>Editar</button>
+          <button class="btn-excluir" data-id="${p.id}">Excluir</button>
+        </div>
+      </td>
     `;
+    lista.appendChild(tr);
+  });
+
+  // Event listeners corrigidos - sem bug de aspas
+  document.querySelectorAll('.btn-editar').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const p = JSON.parse(e.target.dataset.produto);
+      editarProduto(p);
+    });
+  });
+
+  document.querySelectorAll('.btn-excluir').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      excluirProduto(e.target.dataset.id);
+    });
   });
 }
 
@@ -256,34 +265,33 @@ form.addEventListener('submit', async (e) => {
   const img = document.getElementById('img').value;
   const link = document.getElementById('link').value;
   const categoria = document.getElementById('categoria').value;
+  const destaque = document.getElementById('destaque').checked;
 
   await fetch('/api/produtos', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ nome, preco, img, link, categoria })
+    body: JSON.stringify({ nome, preco, img, link, categoria, destaque })
   });
 
   form.reset();
   carregarProdutos();
 });
 
-async function editarProduto(id, nomeAtual, precoAtual, imgAtual, linkAtual, categoriaAtual) {
-  const nome = prompt('Nome:', nomeAtual);
+function editarProduto(p) {
+  const nome = prompt('Nome:', p.nome);
   if (!nome) return;
-  
-  const preco = prompt('Preço:', precoAtual);
-  const img = prompt('Imagem:', imgAtual);
-  const link = prompt('Link:', linkAtual);
-  const categoria = prompt('Categoria:', categoriaAtual);
 
-  if (nome && img && link) {
-    await fetch(`/api/produtos/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nome, preco, img, link, categoria })
-    });
-    carregarProdutos();
-  }
+  const preco = prompt('Preço:', p.preco);
+  const img = prompt('Imagem:', p.img);
+  const link = prompt('Link:', p.link);
+  const categoria = prompt('Categoria:', p.categoria);
+  const destaque = confirm('Marcar como DESTAQUE?');
+
+  fetch(`/api/produtos/${p.id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome, preco, img, link, categoria, destaque })
+  }).then(() => carregarProdutos());
 }
 
 async function excluirProduto(id) {
