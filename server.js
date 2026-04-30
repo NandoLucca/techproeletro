@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = "techpro2026";
 const PRODUTOS_FILE = "./produtos.json";
 
-app.use(express.static("public")); // ← CORRIGIDO
+app.use(express.static("public"));
 app.use(express.json());
 
 function carregarProdutos() {
@@ -24,7 +24,7 @@ function salvarProdutos(produtos) {
   fs.writeFileSync(PRODUTOS_FILE, JSON.stringify(produtos, null, 2));
 }
 
-app.get("/", (req, res) => res.sendFile(__dirname + "/public/index.html")); // ← CORRIGIDO
+app.get("/", (req, res) => res.sendFile(__dirname + "/public/index.html"));
 
 app.post("/admin/login", (req, res) => {
   const { senha } = req.body;
@@ -41,10 +41,31 @@ app.get("/api/produtos", (req, res) => {
 
 app.post("/api/produtos", (req, res) => {
   const produtos = carregarProdutos();
-  const novoProduto = { id: Date.now(), ...req.body };
+  const novoProduto = { id: Date.now(),...req.body };
   produtos.push(novoProduto);
   salvarProdutos(produtos);
   res.json({ success: true, produto: novoProduto });
+});
+
+// NOVA ROTA: Deletar produto
+app.delete("/api/produtos/:id", (req, res) => {
+  let produtos = carregarProdutos();
+  produtos = produtos.filter(p => p.id!= req.params.id);
+  salvarProdutos(produtos);
+  res.json({ success: true });
+});
+
+// NOVA ROTA: Editar produto
+app.put("/api/produtos/:id", (req, res) => {
+  let produtos = carregarProdutos();
+  const index = produtos.findIndex(p => p.id == req.params.id);
+  if (index!== -1) {
+    produtos[index] = {...produtos[index],...req.body };
+    salvarProdutos(produtos);
+    res.json({ success: true, produto: produtos[index] });
+  } else {
+    res.status(404).json({ success: false });
+  }
 });
 
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
