@@ -6,72 +6,70 @@
   <title>Admin - TechProEletro</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-      font-family: 'Segoe UI', Arial, sans-serif; 
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh; 
-      display: flex; 
-      align-items: center; 
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
       justify-content: center;
       padding: 20px;
     }
-  .container { 
-      background: white; 
-      padding: 40px; 
-      border-radius: 15px; 
+ .container {
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
       box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-      width: 100%; 
-      max-width: 450px; 
+      width: 100%;
+      max-width: 450px;
     }
-    h2 { 
-      color: #333; 
-      margin-bottom: 25px; 
+    h2 {
+      color: #333;
+      margin-bottom: 25px;
       text-align: center;
       font-size: 28px;
     }
-    input { 
-      width: 100%; 
-      padding: 14px; 
-      margin: 8px 0; 
-      border: 2px solid #e0e0e0; 
-      border-radius: 8px; 
+    input {
+      width: 100%;
+      padding: 14px;
+      margin: 8px 0;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
       font-size: 15px;
-      transition: 0.3s;
     }
-    input:focus { 
-      outline: none; 
-      border-color: #667eea; 
+    input:focus {
+      outline: none;
+      border-color: #667eea;
     }
-    button { 
-      width: 100%; 
-      padding: 14px; 
+    button {
+      width: 100%;
+      padding: 14px;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white; 
-      border: none; 
-      border-radius: 8px; 
-      font-size: 16px; 
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
       font-weight: bold;
-      cursor: pointer; 
+      cursor: pointer;
       margin-top: 10px;
-      transition: 0.3s;
     }
-    button:hover { 
-      transform: translateY(-2px); 
+    button:hover {
+      transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
     }
     #formulario { display: none; }
-    #msg { 
-      margin-top: 15px; 
-      text-align: center; 
+    #msg {
+      margin-top: 15px;
+      text-align: center;
       font-weight: bold;
       min-height: 20px;
     }
-  .sucesso { color: #28a745; }
-  .erro { color: #dc3545; }
-    label { 
-      display: block; 
-      margin-top: 10px; 
-      color: #555; 
+ .sucesso { color: #28a745; }
+ .erro { color: #dc3545; }
+    label {
+      display: block;
+      margin-top: 10px;
+      color: #555;
       font-weight: 600;
       font-size: 14px;
     }
@@ -89,16 +87,16 @@
       <h2>📦 Cadastrar Produto</h2>
       <label>Nome do produto</label>
       <input type="text" id="nome" placeholder="Ex: Notebook Gamer">
-      
+
       <label>Preço</label>
       <input type="text" id="preco" placeholder="Ex: R$ 2.999,90">
-      
+
       <label>Link da imagem</label>
       <input type="text" id="img" placeholder="https://...">
-      
+
       <label>Link de afiliado</label>
       <input type="text" id="link" placeholder="https://...">
-      
+
       <button onclick="salvar()">Salvar no Supabase</button>
       <p id="msg"></p>
     </div>
@@ -107,7 +105,7 @@
 <script>
 function entrar() {
   const senhaDigitada = document.getElementById('senha').value.trim();
-  
+
   if (senhaDigitada === 'techpro2026') {
     document.getElementById('login').style.display = 'none';
     document.getElementById('formulario').style.display = 'block';
@@ -123,25 +121,27 @@ async function salvar() {
     img: document.getElementById('img').value,
     link: document.getElementById('link').value
   };
-  
+
   const msg = document.getElementById('msg');
-  
+
   if (!produto.nome ||!produto.img ||!produto.link) {
-    msg.textContent = 'Preenche nome, imagem e link';
+    msg.textContent = 'Preenche nome, imagem e link, meu consagrado';
     msg.className = 'erro';
     return;
   }
-  
+
   msg.textContent = 'Salvando no banco...';
   msg.className = '';
-  
+
   try {
     const res = await fetch('/api/produtos', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(produto)
     });
-    
+
+    const data = await res.json();
+
     if (res.ok) {
       msg.textContent = 'Produto salvo no Supabase! ✅';
       msg.className = 'sucesso';
@@ -150,12 +150,14 @@ async function salvar() {
       document.getElementById('img').value = '';
       document.getElementById('link').value = '';
     } else {
-      msg.textContent = 'Erro ao salvar';
+      msg.textContent = 'Erro: ' + data.erro;
       msg.className = 'erro';
+      console.log('Erro Supabase:', data);
     }
   } catch (e) {
-    msg.textContent = 'Erro de conexão';
+    msg.textContent = 'Erro de conexão com servidor';
     msg.className = 'erro';
+    console.log('Erro fetch:', e);
   }
 }
 </script>

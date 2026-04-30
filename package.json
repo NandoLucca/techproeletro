@@ -1,23 +1,14 @@
 {
   "name": "techproeletro",
   "version": "1.0.0",
-  "description": "TechProEletro - Loja de afiliados Amazon com Node.js e Express",
+  "description": "Loja TechProEletro com Supabase",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
-  "keywords": [
-    "amazon",
-    "afiliados",
-    "ecommerce",
-    "nodejs"
-  ],
-  "author": "Fernando Henrique de Lucca",
-  "license": "MIT",
   "dependencies": {
-    "@supabase/supabase-js": "^2.105.1",
-    "express": "^4.22.1"
+    "express": "^4.18.2",
+    "@supabase/supabase-js": "^2.39.0"
   },
   "engines": {
     "node": ">=18.0.0"
