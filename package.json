@@ -1,0 +1,24 @@
+{
+  "name": "techproeletro",
+  "version": "1.0.0",
+  "description": "TechProEletro - Loja de afiliados Amazon com Node.js e Express",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "amazon",
+    "afiliados",
+    "ecommerce",
+    "nodejs"
+  ],
+  "author": "Fernando Henrique de Lucca",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.22.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

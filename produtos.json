@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "nome": "Camiseta Dev Fullstack",
+    "preco": 89.9,
+    "img": "https://placehold.co/400x400/3B82F6/FFFFFF/png?text=Camiseta"
+  },
+  {
+    "id": 2,
+    "nome": "Caneca Git Commit",
+    "preco": 39.9,
+    "img": "https://placehold.co/400x400/8B5CF6/FFFFFF/png?text=Caneca"
+  },
+  {
+    "id": 3,
+    "nome": "Mouse Pad Código",
+    "preco": 29.9,
+    "img": "https://placehold.co/400x400/10B981/FFFFFF/png?text=Mouse+Pad"
+  },
+  {
+    "id": 4,
+    "nome": "Adesivo \"Funciona na minha máquina\"",
+    "preco": 5.9,
+    "img": "https://placehold.co/400x400/F59E0B/FFFFFF/png?text=Adesivo"
+  },
+  {
+    "id": 5,
+    "nome": "Tenis Dev",
+    "preco": 249.9,
+    "img": "/uploads/1777490991208-Captura de tela 2026-04-29 162910.png"
+  },
+  {
+    "id": 6,
+    "nome": "Peixe Betta ",
+    "preco": 17.9,
+    "img": "/uploads/1777490062198-beautiful_red_betta_siamese_fighting_fish_male-wallpaper-1920x1080.jpg"
+  },
+  {
+    "id": 7,
+    "nome": "Peixe leão",
+    "preco": 12.36,
+    "img": "/uploads/1777490367968-lionfish_2-wallpaper-1920x1080.jpg"
+  }
+]

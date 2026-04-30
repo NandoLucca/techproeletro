@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Loja Dev do Zero</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background-color: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .login-box, .painel { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 90%; max-width: 500px; }
+        .painel { max-width: 800px; display: none; }
+        h1 { margin-bottom: 20px; text-align: center; }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; }
+        button { width: 100%; padding: 12px; background-color: #4a69bd; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #3c5aa6; }
+        .erro { color: #e74c3c; text-align: center; margin-top: 10px; }
+        .aviso { background-color: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .produto-lista { margin-top: 20px; }
+        .produto-item { background: #f8f9fa; padding: 15px; margin-bottom: 10px; border-radius: 5px; display: flex; justify-content: space-between; }
+    </style>
+</head>
+<body>
+    <div class="login-box" id="loginBox">
+        <h1>Login Admin</h1>
+        <input type="password" id="senha" placeholder="Digite a senha" />
+        <button onclick="fazerLogin()">Entrar</button>
+        <div class="erro" id="erro"></div>
+    </div>
+
+    <div class="painel" id="painel">
+        <h1>Painel Admin</h1>
+        <div class="aviso">
+            <strong>⚠️ Modo Visualização</strong><br>
+            Na Vercel não dá pra salvar produtos novos. Pra adicionar/editar, você muda direto no arquivo <code>server.js</code> e dá push no GitHub.
+        </div>
+        <h3>Produtos atuais:</h3>
+        <div class="produto-lista" id="listaProdutos"></div>
+    </div>
+
+    <script>
+        async function fazerLogin() {
+            const senha = document.getElementById('senha').value;
+            const erroDiv = document.getElementById('erro');
+            
+            try {
+                const resposta = await fetch('/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ senha })
+                });
+                
+                const dados = await resposta.json();
+                
+                if (dados.success) {
+                    document.getElementById('loginBox').style.display = 'none';
+                    document.getElementById('painel').style.display = 'block';
+                    carregarProdutos();
+                } else {
+                    erroDiv.textContent = 'Senha incorreta!';
+                }
+            } catch (error) {
+                erroDiv.textContent = 'Erro ao conectar. Tenta de novo.';
+            }
+        }
+
+        async function carregarProdutos() {
+            const resposta = await fetch('/api/produtos');
+            const produtos = await resposta.json();
+            const lista = document.getElementById('listaProdutos');
+            
+            lista.innerHTML = '';
+            produtos.forEach(p => {
+                lista.innerHTML += `
+                    <div class="produto-item">
+                        <div>
+                            <strong>${p.nome}</strong><br>
+                            R$ ${p.preco}
+                        </div>
+                        <img src="${p.img}" width="60" height="60" style="object-fit: cover; border-radius: 5px;">
+                    </div>
+                `;
+            });
+        }
+
+        document.getElementById('senha').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') fazerLogin();
+        });
+    </script>
+</body>
+</html>
