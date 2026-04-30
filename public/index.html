@@ -16,7 +16,7 @@
       overflow-x: hidden;
     }
     
-    /* HEADER MAIS CLEAN */
+    /* HEADER */
     .header {
       position: sticky;
       top: 0;
@@ -31,7 +31,7 @@
       margin: 0 auto;
     }
     
-    /* LOGO MAIOR E MAIS IMPACTANTE */
+    /* LOGO GRANDE */
     .logo {
       font-size: 42px;
       font-weight: 800;
@@ -50,7 +50,7 @@
       font-weight: 400;
     }
     
-    /* HERO MAIS DISCRETO */
+    /* HERO MENOR */
     .hero {
       text-align: center;
       padding: 50px 20px 30px;
@@ -84,7 +84,7 @@
       margin-top: 20px;
     }
     
-    /* CARD 3D PREMIUM */
+    /* CARD 3D */
     .card {
       background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(10px);
@@ -115,20 +115,25 @@
       border-color: rgba(102, 126, 234, 0.4);
     }
     
+    /* WRAPPER DA IMAGEM - AQUI É A MÁGICA DO ENQUADRAMENTO */
     .card-img-wrapper {
       position: relative;
       overflow: hidden;
-      height: 260px;
-      background: #1a1a2e;
+      height: 280px;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
     .card img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       transition: transform 0.5s;
     }
     .card:hover img {
-      transform: scale(1.08);
+      transform: scale(1.05);
     }
     
     .badge-oferta {
@@ -144,6 +149,7 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+      z-index: 2;
     }
     
     .card-body {
@@ -278,7 +284,7 @@ async function carregarVitrine() {
       card.style.animationDelay = `${index * 0.1}s`;
       card.innerHTML = `
         <div class="card-img-wrapper">
-          <img src="${produto.img}" alt="${produto.nome}" onerror="this.src='https://via.placeholder.com/400x260/667eea/ffffff?text=Sem+Imagem'">
+          <img src="${produto.img}" alt="${produto.nome}" onerror="this.src='https://via.placeholder.com/400x280/667eea/ffffff?text=Sem+Imagem'">
           <div class="badge-oferta">Oferta</div>
         </div>
         <div class="card-body">
