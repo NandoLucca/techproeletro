@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TechProEletro - Ofertas 3D</title>
+  <title>TechProEletro - Ofertas Exclusivas</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -16,81 +16,75 @@
       overflow-x: hidden;
     }
     
-    /* HEADER 3D COM GLASSMORPHISM */
+    /* HEADER MAIS CLEAN */
     .header {
       position: sticky;
       top: 0;
       z-index: 100;
       backdrop-filter: blur(20px);
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(15, 12, 41, 0.8);
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 20px;
+      padding: 25px 20px;
     }
     .header-content {
       max-width: 1300px;
       margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
     }
     
-    /* LOGO 3D NEON */
+    /* LOGO MAIOR E MAIS IMPACTANTE */
     .logo {
-      font-size: 32px;
+      font-size: 42px;
       font-weight: 800;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
-      transform: perspective(500px) rotateX(10deg);
-      animation: flutuar 3s ease-in-out infinite;
-    }
-    @keyframes flutuar {
-      0%, 100% { transform: perspective(500px) rotateX(10deg) translateY(0px); }
-      50% { transform: perspective(500px) rotateX(10deg) translateY(-10px); }
+      text-shadow: 0 0 40px rgba(102, 126, 234, 0.6);
+      display: inline-block;
+      letter-spacing: -1px;
     }
     
     .tagline {
       font-size: 14px;
-      opacity: 0.7;
-      margin-top: 5px;
+      opacity: 0.6;
+      margin-top: 8px;
+      font-weight: 400;
     }
     
-    /* HERO SECTION */
+    /* HERO MAIS DISCRETO */
     .hero {
       text-align: center;
-      padding: 60px 20px 40px;
+      padding: 50px 20px 30px;
       max-width: 800px;
       margin: 0 auto;
     }
     .hero h2 {
-      font-size: 48px;
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 20px;
-      background: linear-gradient(135deg, #fff 0%, #a8b2ff 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 12px;
+      color: #fff;
+      opacity: 0.95;
     }
     .hero p {
-      font-size: 18px;
-      opacity: 0.8;
+      font-size: 16px;
+      opacity: 0.7;
+      font-weight: 400;
     }
     
     /* CONTAINER PRODUTOS */
     .container {
       max-width: 1300px;
       margin: 0 auto;
-      padding: 0 20px 60px;
+      padding: 0 20px 80px;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 30px;
-      margin-top: 30px;
+      margin-top: 20px;
     }
     
-    /* CARD 3D COM GLASSMORPHISM */
+    /* CARD 3D PREMIUM */
     .card {
       background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(10px);
@@ -98,18 +92,16 @@
       border-radius: 20px;
       overflow: hidden;
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      transform-style: preserve-3d;
       animation: aparecer 0.5s ease-out backwards;
     }
     .card:nth-child(1) { animation-delay: 0.1s; }
     .card:nth-child(2) { animation-delay: 0.2s; }
     .card:nth-child(3) { animation-delay: 0.3s; }
-    .card:nth-child(4) { animation-delay: 0.4s; }
     
     @keyframes aparecer {
       from {
         opacity: 0;
-        transform: translateY(30px) scale(0.9);
+        transform: translateY(30px) scale(0.95);
       }
       to {
         opacity: 1;
@@ -118,15 +110,16 @@
     }
     
     .card:hover {
-      transform: translateY(-15px) scale(1.03);
-      box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4);
-      border-color: rgba(102, 126, 234, 0.5);
+      transform: translateY(-12px) scale(1.02);
+      box-shadow: 0 20px 50px rgba(102, 126, 234, 0.3);
+      border-color: rgba(102, 126, 234, 0.4);
     }
     
     .card-img-wrapper {
       position: relative;
       overflow: hidden;
       height: 260px;
+      background: #1a1a2e;
     }
     .card img {
       width: 100%;
@@ -135,45 +128,42 @@
       transition: transform 0.5s;
     }
     .card:hover img {
-      transform: scale(1.1);
+      transform: scale(1.08);
     }
     
-    /* BADGE OFERTA PULSANDO */
     .badge-oferta {
       position: absolute;
       top: 15px;
       right: 15px;
       background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
       color: white;
-      padding: 8px 15px;
+      padding: 8px 16px;
       border-radius: 20px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
-      animation: pulsar 2s infinite;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
       box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
-    }
-    @keyframes pulsar {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
     }
     
     .card-body {
       padding: 25px;
     }
     .card h3 {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 600;
       margin-bottom: 15px;
-      min-height: 50px;
+      min-height: 45px;
       color: #fff;
+      line-height: 1.4;
     }
     .preco {
-      font-size: 36px;
+      font-size: 34px;
       font-weight: 800;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin: 15px 0;
+      margin: 15px 0 20px;
     }
     .btn-comprar {
       display: block;
@@ -185,9 +175,11 @@
       text-decoration: none;
       border-radius: 12px;
       font-weight: 700;
-      font-size: 16px;
+      font-size: 15px;
       transition: all 0.3s;
       box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     .btn-comprar:hover {
       transform: translateY(-2px);
@@ -197,27 +189,40 @@
     .loading {
       text-align: center;
       padding: 80px 20px;
-      font-size: 20px;
+      font-size: 18px;
       opacity: 0.6;
+      grid-column: 1/-1;
     }
     .vazio {
       text-align: center;
       padding: 80px 20px;
       opacity: 0.6;
+      grid-column: 1/-1;
     }
     
+    /* RODAPÉ PROFISSIONAL */
     footer {
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.4);
       backdrop-filter: blur(10px);
       text-align: center;
-      padding: 30px 20px;
+      padding: 35px 20px;
       margin-top: 80px;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
+    footer p {
+      opacity: 0.6;
+      font-size: 14px;
+      font-weight: 400;
+    }
+    footer .copyright {
+      font-weight: 500;
+      margin-bottom: 8px;
+      opacity: 0.8;
+    }
     
     @media (max-width: 768px) {
-      .hero h2 { font-size: 32px; }
-      .logo { font-size: 24px; }
+      .logo { font-size: 32px; }
+      .hero h2 { font-size: 26px; }
       .grid { grid-template-columns: 1fr; }
     }
   </style>
@@ -227,14 +232,14 @@
     <div class="header-content">
       <div>
         <div class="logo">🚀 TechProEletro</div>
-        <div class="tagline">Tecnologia em 3D</div>
+        <div class="tagline">Tecnologia e Inovação</div>
       </div>
     </div>
   </div>
 
   <div class="hero">
     <h2>Ofertas Que Saltam Da Tela</h2>
-    <p>Os melhores produtos com preços que cabem no bolso</p>
+    <p>Produtos selecionados com os melhores preços do mercado</p>
   </div>
 
   <div class="container">
@@ -244,7 +249,8 @@
   </div>
 
   <footer>
-    <p>&copy; 2026 TechProEletro - Feito com 💙 por Nando</p>
+    <p class="copyright">&copy; 2026 TechProEletro. Todos os direitos reservados.</p>
+    <p>CNPJ: 00.000.000/0001-00 | Contato: contato@techproeletro.com</p>
   </footer>
 
 <script>
@@ -256,7 +262,7 @@ async function carregarVitrine() {
     const produtos = await res.json();
 
     if (produtos.length === 0) {
-      container.innerHTML = '<div class="vazio">😢 Nenhuma oferta disponível ainda. Volta mais tarde!</div>';
+      container.innerHTML = '<div class="vazio">Nenhuma oferta disponível no momento. Volte em breve!</div>';
       return;
     }
 
@@ -273,12 +279,12 @@ async function carregarVitrine() {
       card.innerHTML = `
         <div class="card-img-wrapper">
           <img src="${produto.img}" alt="${produto.nome}" onerror="this.src='https://via.placeholder.com/400x260/667eea/ffffff?text=Sem+Imagem'">
-          <div class="badge-oferta">🔥 OFERTA</div>
+          <div class="badge-oferta">Oferta</div>
         </div>
         <div class="card-body">
           <h3>${produto.nome}</h3>
           <div class="preco">${precoFormatado}</div>
-          <a href="${produto.link}" target="_blank" class="btn-comprar">🚀 Comprar Agora</a>
+          <a href="${produto.link}" target="_blank" class="btn-comprar">Comprar Agora</a>
         </div>
       `;
       container.appendChild(card);
@@ -286,7 +292,7 @@ async function carregarVitrine() {
 
   } catch (error) {
     console.error('Erro:', error);
-    container.innerHTML = '<div class="vazio">❌ Erro ao carregar. Tenta recarregar a página!</div>';
+    container.innerHTML = '<div class="vazio">Erro ao carregar ofertas. Tente novamente.</div>';
   }
 }
 
