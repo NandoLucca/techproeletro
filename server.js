@@ -1,5 +1,6 @@
 const express = require("express");
 const fs = require("fs");
+const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -24,8 +25,15 @@ function salvarProdutos(produtos) {
   fs.writeFileSync(PRODUTOS_FILE, JSON.stringify(produtos, null, 2));
 }
 
-app.get("/", (req, res) => res.sendFile(__dirname + "/public/index.html"));
+// Rotas das páginas
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public/index.html")));
 
+// NOVA ROTA: Serve admin.html da raiz do projeto
+app.get("/admin.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "admin.html"));
+});
+
+// Rotas da API
 app.post("/admin/login", (req, res) => {
   const { senha } = req.body;
   if (senha === ADMIN_PASSWORD) {
@@ -47,7 +55,7 @@ app.post("/api/produtos", (req, res) => {
   res.json({ success: true, produto: novoProduto });
 });
 
-// NOVA ROTA: Deletar produto
+// Deletar produto
 app.delete("/api/produtos/:id", (req, res) => {
   let produtos = carregarProdutos();
   produtos = produtos.filter(p => p.id!= req.params.id);
@@ -55,7 +63,7 @@ app.delete("/api/produtos/:id", (req, res) => {
   res.json({ success: true });
 });
 
-// NOVA ROTA: Editar produto
+// Editar produto
 app.put("/api/produtos/:id", (req, res) => {
   let produtos = carregarProdutos();
   const index = produtos.findIndex(p => p.id == req.params.id);
