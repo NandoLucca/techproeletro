@@ -15,7 +15,13 @@
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
     .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; overflow: hidden; transition: 0.3s; }
     .card:hover { transform: translateY(-5px); border-color: #3b82f6; }
-    .card img { width: 100%; height: 250px; object-fit: cover; background: #0f172a; }
+    .card img { 
+        width: 100%; 
+        height: 250px; 
+        object-fit: contain; 
+        background: #ffffff; 
+        padding: 10px;
+    }
     .info { padding: 20px; }
     .info h3 { font-size: 18px; margin-bottom: 12px; color: #f1f5f9; min-height: 44px; }
     .preco-aviso { color: #3b82f6; font-size: 16px; margin-bottom: 15px; font-weight: bold; }
