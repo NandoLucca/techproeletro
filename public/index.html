@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TechProEletro - Ofertas em Eletrônicos</title>
+  <title>TechProEletro - Tecnologia e Inovação</title>
   
-  <!-- Google tag (gtag.js) - TROCA G-XXXXXXXXXX PELO TEU ID -->
+  <!-- Google Analytics - TROCA G-XXXXXXXXXX PELO TEU ID -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -23,197 +23,279 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f5f5;
-      color: #111827;
+      background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      min-height: 100vh;
     }
 
     header {
-      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-      color: white;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      padding: 25px 20px;
+      box-shadow: 0 4px 20px rgba(138, 43, 226, 0.3);
     }
 
-    header h1 {
-      font-size: 32px;
-      margin-bottom: 8px;
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
     }
 
-    header p {
+    .logo-area h1 {
+      font-size: 36px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #a855f7 0%, #ec4899 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-area p {
       font-size: 14px;
-      opacity: 0.9;
+      color: #cbd5e1;
+      margin-top: 5px;
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-box input {
+      padding: 12px 20px;
+      padding-right: 45px;
+      border: 2px solid #8b5cf6;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border-radius: 25px;
+      width: 300px;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .search-box input:focus {
+      background: rgba(255,255,255,0.15);
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+    }
+
+    .search-box input::placeholder {
+      color: #94a3b8;
     }
 
     .container {
-      max-width: 1200px;
-      margin: 30px auto;
+      max-width: 1400px;
+      margin: 40px auto;
       padding: 0 20px;
     }
 
     .filtros {
       display: flex;
-      gap: 10px;
-      margin-bottom: 30px;
+      gap: 12px;
+      margin-bottom: 40px;
       flex-wrap: wrap;
       justify-content: center;
     }
 
     .filtro-btn {
-      padding: 10px 20px;
-      border: 2px solid #3b82f6;
-      background: white;
-      color: #3b82f6;
+      padding: 12px 28px;
+      border: none;
+      background: rgba(139, 92, 246, 0.2);
+      color: #e9d5ff;
       border-radius: 25px;
       cursor: pointer;
       font-weight: 600;
+      font-size: 15px;
       transition: all 0.3s;
+      backdrop-filter: blur(10px);
     }
 
-    .filtro-btn:hover, .filtro-btn.ativo {
-      background: #3b82f6;
+    .filtro-btn:hover {
+      background: rgba(139, 92, 246, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .filtro-btn.ativo {
+      background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
       color: white;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
     }
 
     .grid-produtos {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 25px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 30px;
     }
 
     .card-produto {
-      background: white;
-      border-radius: 12px;
+      background: rgba(30, 27, 75, 0.6);
+      border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      transition: transform 0.3s, box-shadow 0.3s;
-      display: flex;
-      flex-direction: column;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      transition: all 0.4s;
     }
 
     .card-produto:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+      transform: translateY(-8px);
+      box-shadow: 0 15px 40px rgba(139, 92, 246, 0.3);
+      border-color: rgba(139, 92, 246, 0.5);
+    }
+
+    .card-img-container {
+      background: white;
+      padding: 20px;
+      position: relative;
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .card-img {
-      width: 100%;
-      height: 250px;
+      max-width: 100%;
+      max-height: 100%;
       object-fit: contain;
-      background: #f9fafb;
-      padding: 20px;
+    }
+
+    .badge-categoria {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: rgba(30, 27, 75, 0.9);
+      color: #e9d5ff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-oferta {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
     }
 
     .card-conteudo {
-      padding: 20px;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .card-categoria {
-      font-size: 12px;
-      color: #6b7280;
-      text-transform: uppercase;
-      font-weight: 600;
-      margin-bottom: 8px;
+      padding: 25px;
     }
 
     .card-nome {
       font-size: 16px;
       font-weight: 600;
-      color: #111827;
-      margin-bottom: 12px;
-      line-height: 1.4;
-      min-height: 44px;
+      color: #f1f5f9;
+      margin-bottom: 18px;
+      line-height: 1.5;
+      min-height: 48px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .card-preco {
-      margin-bottom: 16px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
     }
 
     .preco {
-      font-size: 28px;
-      font-weight: 700;
-      color: #111827;
+      font-size: 32px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #a855f7 0%, #ec4899 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
+    /* ÚNICA COISA NOVA: ADICIONEI ISSO */
     .a-vista {
-      font-size: 14px;
+      font-size: 13px;
       color: #10b981;
       font-weight: 600;
-      margin-left: 6px;
     }
-
-    .badge-destaque {
-      background: #fbbf24;
-      color: #78350f;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 12px;
-      display: inline-block;
-      margin-bottom: 10px;
-    }
+    /* FIM DA MUDANÇA */
 
     .btn-comprar {
       width: 100%;
-      padding: 14px;
-      background: #10b981;
+      padding: 16px;
+      background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 12px;
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: all 0.3s;
       text-decoration: none;
       text-align: center;
       display: block;
-      margin-top: auto;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
     }
 
     .btn-comprar:hover {
-      background: #059669;
+      transform: scale(1.02);
+      box-shadow: 0 6px 25px rgba(139, 92, 246, 0.6);
     }
 
     .loading {
       text-align: center;
-      padding: 60px 20px;
+      padding: 80px 20px;
       font-size: 18px;
-      color: #6b7280;
+      color: #cbd5e1;
     }
 
     footer {
-      background: #1f2937;
-      color: #9ca3af;
+      background: #0f0c29;
+      color: #94a3b8;
       text-align: center;
-      padding: 30px 20px;
-      margin-top: 60px;
-      font-size: 14px;
+      padding: 40px 20px;
+      margin-top: 80px;
+      border-top: 1px solid rgba(139, 92, 246, 0.2);
     }
 
     @media (max-width: 768px) {
-      header h1 {
-        font-size: 24px;
+      .header-content {
+        flex-direction: column;
+      }
+      .search-box input {
+        width: 100%;
       }
       .grid-produtos {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        gap: 15px;
+        grid-template-columns: 1fr;
       }
-      .card-img {
-        height: 180px;
+      .logo-area h1 {
+        font-size: 28px;
       }
       .preco {
-        font-size: 22px;
+        font-size: 26px;
       }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>TechProEletro</h1>
-    <p>As melhores ofertas em eletrônicos com entrega rápida</p>
+    <div class="header-content">
+      <div class="logo-area">
+        <h1>🚀 TechProEletro</h1>
+        <p>Tecnologia e Inovação</p>
+      </div>
+      <div class="search-box">
+        <input type="text" id="busca" placeholder="Buscar produto...">
+      </div>
+    </div>
   </header>
 
   <div class="container">
@@ -228,14 +310,13 @@
 
   <footer>
     <p>TechProEletro © 2026 - Todos os direitos reservados</p>
-    <p>Este site contém links de afiliado. Podemos receber comissão por compras realizadas.</p>
+    <p style="margin-top: 10px; font-size: 13px;">Este site contém links de afiliado. Podemos receber comissão por compras realizadas.</p>
   </footer>
 
   <script>
     let todosProdutos = [];
     let categoriaAtual = 'todos';
 
-    // Formata preço brasileiro
     function formatarPreco(valor) {
       if (!valor) return 'Consulte';
       return Number(valor).toLocaleString('pt-BR', { 
@@ -244,31 +325,31 @@
       });
     }
 
-    // Rastreia clique no botão de afiliado
     function rastrearClique(produto) {
       gtag('event', 'clique_afiliado', {
         'produto_nome': produto.nome,
         'produto_preco': produto.preco,
-        'produto_categoria': produto.categoria || 'Geral',
+        'produto_categoria': produto.categoria || 'Eletrônicos',
         'link_destino': produto.link
       });
     }
 
-    // Renderiza os produtos na tela
     function renderizarProdutos(produtos) {
       const container = document.getElementById('produtos');
       
       if (produtos.length === 0) {
-        container.innerHTML = '<div class="loading">Nenhum produto encontrado nesta categoria.</div>';
+        container.innerHTML = '<div class="loading">Nenhum produto encontrado.</div>';
         return;
       }
 
       container.innerHTML = produtos.map(produto => `
         <div class="card-produto">
-          <img src="${produto.img}" alt="${produto.nome}" class="card-img" loading="lazy">
+          <div class="card-img-container">
+            <span class="badge-categoria">${produto.categoria || 'Eletrônicos'}</span>
+            ${produto.destaque ? '<span class="badge-oferta">OFERTA</span>' : ''}
+            <img src="${produto.img}" alt="${produto.nome}" class="card-img" loading="lazy">
+          </div>
           <div class="card-conteudo">
-            ${produto.destaque ? '<span class="badge-destaque">⭐ DESTAQUE</span>' : ''}
-            <div class="card-categoria">${produto.categoria || 'Geral'}</div>
             <h3 class="card-nome">${produto.nome}</h3>
             <div class="card-preco">
               <span class="preco">${formatarPreco(produto.preco)}</span>
@@ -285,9 +366,8 @@
       `).join('');
     }
 
-    // Cria botões de filtro por categoria
     function criarFiltros(produtos) {
-      const categorias = [...new Set(produtos.map(p => p.categoria || 'Geral'))];
+      const categorias = [...new Set(produtos.map(p => p.categoria || 'Eletrônicos'))];
       const container = document.getElementById('filtros');
       
       const botoes = categorias.map(cat => 
@@ -296,7 +376,6 @@
       
       container.innerHTML = '<button class="filtro-btn ativo" data-categoria="todos">Todos</button>' + botoes;
 
-      // Adiciona evento de clique nos filtros
       document.querySelectorAll('.filtro-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('ativo'));
@@ -305,20 +384,28 @@
           categoriaAtual = btn.dataset.categoria;
           const filtrados = categoriaAtual === 'todos' 
             ? todosProdutos 
-            : todosProdutos.filter(p => (p.categoria || 'Geral') === categoriaAtual);
+            : todosProdutos.filter(p => (p.categoria || 'Eletrônicos') === categoriaAtual);
           
           renderizarProdutos(filtrados);
         });
       });
     }
 
-    // Busca produtos da API
+    // Busca em tempo real
+    document.getElementById('busca').addEventListener('input', (e) => {
+      const termo = e.target.value.toLowerCase();
+      const filtrados = todosProdutos.filter(p => 
+        p.nome.toLowerCase().includes(termo) || 
+        (p.categoria || '').toLowerCase().includes(termo)
+      );
+      renderizarProdutos(filtrados);
+    });
+
     async function carregarProdutos() {
       try {
         const res = await fetch('/api/produtos');
         todosProdutos = await res.json();
         
-        // Ordena: destaques primeiro, depois mais recentes
         todosProdutos.sort((a, b) => {
           if (a.destaque && !b.destaque) return -1;
           if (!a.destaque && b.destaque) return 1;
@@ -334,7 +421,6 @@
       }
     }
 
-    // Inicia quando a página carregar
     carregarProdutos();
   </script>
 </body>
