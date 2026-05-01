@@ -23,7 +23,7 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+      background: linear-gradient(180deg, #0a0a1a 0%, #0f0c29 50%, #16213e 100%);
       color: #fff;
       min-height: 100vh;
     }
@@ -31,7 +31,8 @@
     header {
       background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
       padding: 25px 20px;
-      box-shadow: 0 4px 20px rgba(138, 43, 226, 0.3);
+      box-shadow: 0 4px 30px rgba(168, 85, 247, 0.2);
+      border-bottom: 1px solid rgba(168, 85, 247, 0.2);
     }
 
     .header-content {
@@ -45,7 +46,7 @@
     }
 
     .logo-area h1 {
-      font-size: 40px;
+      font-size: 42px;
       font-weight: 900;
       background: linear-gradient(90deg, #8b5cf6 0%, #a855f7 50%, #ec4899 100%);
       -webkit-background-clip: text;
@@ -54,17 +55,17 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      text-shadow: 0 0 25px rgba(168, 85, 247, 0.9), 
-                   0 0 50px rgba(139, 92, 246, 0.7),
-                   0 5px 15px rgba(139, 92, 246, 1);
-      filter: drop-shadow(0 8px 16px rgba(139, 92, 246, 0.8));
+      /* GLOW MAIS SUAVE - TIREI 60% DO BRILHO */
+      text-shadow: 0 0 15px rgba(168, 85, 247, 0.4), 
+                   0 2px 8px rgba(139, 92, 246, 0.3);
+      filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.4));
     }
 
     .logo-area p {
       font-size: 14px;
       color: #cbd5e1;
-      margin-top: 5px;
-      margin-left: 52px;
+      margin-top: 8px;
+      margin-left: 54px;
     }
 
     .search-box {
@@ -72,21 +73,22 @@
     }
 
     .search-box input {
-      padding: 12px 20px;
-      padding-right: 45px;
+      padding: 14px 24px;
+      padding-right: 50px;
       border: 2px solid #8b5cf6;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.08);
       color: white;
-      border-radius: 25px;
-      width: 320px;
+      border-radius: 30px;
+      width: 340px;
       font-size: 14px;
       outline: none;
       transition: all 0.3s;
+      backdrop-filter: blur(10px);
     }
 
     .search-box input:focus {
-      background: rgba(255,255,255,0.15);
-      box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+      background: rgba(255,255,255,0.12);
+      box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
       border-color: #a855f7;
     }
 
@@ -94,70 +96,88 @@
       color: #94a3b8;
     }
 
-    .container {
+    /* ABAS DESTAQUES + CATEGORIAS */
+    .tabs-container {
       max-width: 1400px;
-      margin: 40px auto;
+      margin: 0 auto;
       padding: 0 20px;
+      border-bottom: 1px solid rgba(139, 92, 246, 0.2);
     }
 
-    .filtros {
+    .tabs {
       display: flex;
-      gap: 12px;
-      margin-bottom: 40px;
-      flex-wrap: wrap;
+      gap: 0;
       justify-content: center;
     }
 
-    .filtro-btn {
-      padding: 12px 32px;
+    .tab {
+      padding: 18px 40px;
+      background: transparent;
+      color: #cbd5e1;
       border: none;
-      background: rgba(139, 92, 246, 0.2);
-      color: #e9d5ff;
-      border-radius: 25px;
       cursor: pointer;
       font-weight: 600;
       font-size: 15px;
       transition: all 0.3s;
-      backdrop-filter: blur(10px);
+      border-bottom: 3px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .filtro-btn:hover {
-      background: rgba(139, 92, 246, 0.4);
-      transform: translateY(-2px);
+    .tab:hover {
+      color: #e9d5ff;
+      background: rgba(139, 92, 246, 0.1);
     }
 
-    .filtro-btn.ativo {
-      background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
-      color: white;
-      box-shadow: 0 4px 20px rgba(139, 92, 246, 0.5);
+    .tab.ativo {
+      color: #fff;
+      border-bottom: 3px solid #a855f7;
+      background: rgba(139, 92, 246, 0.15);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 50px auto;
+      padding: 0 20px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px;
+      font-size: 24px;
+      font-weight: 700;
+      color: #f1f5f9;
     }
 
     .grid-produtos {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 30px;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 35px;
     }
 
     .card-produto {
-      background: rgba(30, 27, 75, 0.6);
-      border-radius: 20px;
+      background: rgba(20, 18, 50, 0.7);
+      border-radius: 24px;
       overflow: hidden;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(139, 92, 246, 0.2);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(139, 92, 246, 0.25);
       transition: all 0.4s;
     }
 
     .card-produto:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 15px 40px rgba(139, 92, 246, 0.4);
-      border-color: rgba(168, 85, 247, 0.6);
+      transform: translateY(-10px);
+      box-shadow: 0 20px 50px rgba(139, 92, 246, 0.5);
+      border-color: rgba(168, 85, 247, 0.8);
     }
 
     .card-img-container {
       background: white;
-      padding: 25px;
+      padding: 30px;
       position: relative;
-      height: 300px;
+      height: 320px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -171,46 +191,48 @@
 
     .badge-categoria {
       position: absolute;
-      top: 15px;
-      left: 15px;
-      background: rgba(30, 27, 75, 0.95);
+      top: 18px;
+      left: 18px;
+      background: rgba(20, 18, 50, 0.95);
       color: #e9d5ff;
-      padding: 7px 16px;
+      padding: 8px 18px;
       border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
+      font-size: 11px;
+      font-weight: 800;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .badge-oferta {
       position: absolute;
-      top: 15px;
-      right: 15px;
+      top: 18px;
+      right: 18px;
       background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
       color: white;
-      padding: 7px 16px;
+      padding: 8px 18px;
       border-radius: 20px;
-      font-size: 12px;
-      font-weight: 800;
-      box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+      font-size: 11px;
+      font-weight: 900;
+      box-shadow: 0 4px 20px rgba(245, 87, 108, 0.5);
       animation: pulse 2s infinite;
+      letter-spacing: 0.5px;
     }
 
     @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+      0%, 100% { transform: scale(1); box-shadow: 0 4px 20px rgba(245, 87, 108, 0.5); }
+      50% { transform: scale(1.08); box-shadow: 0 6px 30px rgba(245, 87, 108, 0.7); }
     }
 
     .card-conteudo {
-      padding: 25px;
+      padding: 28px;
     }
 
     .card-nome {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       color: #f1f5f9;
-      margin-bottom: 20px;
-      line-height: 1.5;
+      margin-bottom: 22px;
+      line-height: 1.6;
       min-height: 48px;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -219,15 +241,15 @@
     }
 
     .card-preco {
-      margin-bottom: 20px;
+      margin-bottom: 24px;
       display: flex;
       align-items: baseline;
-      gap: 8px;
+      gap: 10px;
     }
 
     .preco {
-      font-size: 34px;
-      font-weight: 800;
+      font-size: 36px;
+      font-weight: 900;
       background: linear-gradient(90deg, #a855f7 0%, #ec4899 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -237,30 +259,31 @@
     .a-vista {
       font-size: 13px;
       color: #a855f7;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .btn-comprar {
       width: 100%;
-      padding: 16px;
+      padding: 18px;
       background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #ec4899 100%);
       color: white;
       border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 700;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 800;
       cursor: pointer;
       transition: all 0.3s;
       text-decoration: none;
       text-align: center;
       display: block;
-      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
       text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .btn-comprar:hover {
-      transform: scale(1.03);
-      box-shadow: 0 6px 25px rgba(139, 92, 246, 0.7);
+      transform: scale(1.04);
+      box-shadow: 0 8px 30px rgba(139, 92, 246, 0.8);
     }
 
     .loading {
@@ -271,12 +294,12 @@
     }
 
     footer {
-      background: #0f0c29;
+      background: #0a0818;
       color: #94a3b8;
       text-align: center;
-      padding: 40px 20px;
-      margin-top: 80px;
-      border-top: 1px solid rgba(139, 92, 246, 0.2);
+      padding: 50px 20px;
+      margin-top: 100px;
+      border-top: 1px solid rgba(139, 92, 246, 0.3);
     }
 
     @media (max-width: 768px) {
@@ -290,13 +313,17 @@
         grid-template-columns: 1fr;
       }
       .logo-area h1 {
-        font-size: 30px;
+        font-size: 32px;
       }
       .logo-area p {
         margin-left: 0;
+        text-align: center;
       }
       .preco {
-        font-size: 28px;
+        font-size: 30px;
+      }
+      .tabs {
+        overflow-x: auto;
       }
     }
   </style>
@@ -314,9 +341,18 @@
     </div>
   </header>
 
+  <!-- ABAS: DESTAQUES E CATEGORIAS -->
+  <div class="tabs-container">
+    <div class="tabs" id="tabs">
+      <button class="tab ativo" data-tab="destaques">⭐ Destaques</button>
+      <button class="tab" data-tab="todos">Todos</button>
+    </div>
+  </div>
+
   <div class="container">
-    <div class="filtros" id="filtros">
-      <button class="filtro-btn ativo" data-categoria="todos">Todos</button>
+    <div class="section-title" id="sectionTitle">
+      <span>📦</span>
+      <span>Destaques</span>
     </div>
 
     <div class="grid-produtos" id="produtos">
@@ -331,7 +367,7 @@
 
   <script>
     let todosProdutos = [];
-    let categoriaAtual = 'todos';
+    let abaAtual = 'destaques';
 
     function formatarPreco(valor) {
       if (!valor) return 'Consulte';
@@ -369,7 +405,7 @@
       container.innerHTML = produtos.map(produto => `
         <div class="card-produto">
           <div class="card-img-container">
-            <span class="badge-categoria">${produto.categoria || 'Eletrônicos'}</span>
+            <span class="badge-categoria">${produto.categoria || 'ELETRÔNICOS'}</span>
             ${ehDestaque(produto) ? '<span class="badge-oferta">OFERTA</span>' : ''}
             <img src="${produto.img}" alt="${produto.nome}" class="card-img" loading="lazy">
           </div>
@@ -390,27 +426,45 @@
       `).join('');
     }
 
-    function criarFiltros(produtos) {
-      const categorias = [...new Set(produtos.map(p => p.categoria || 'Eletrônicos'))];
-      const container = document.getElementById('filtros');
+    function atualizarAba(aba) {
+      abaAtual = aba;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('ativo'));
+      document.querySelector(`[data-tab="${aba}"]`).classList.add('ativo');
       
-      const botoes = categorias.map(cat => 
-        `<button class="filtro-btn" data-categoria="${cat}">${cat}</button>`
+      const title = document.getElementById('sectionTitle');
+      let produtosFiltrados = [];
+      
+      if (aba === 'destaques') {
+        produtosFiltrados = todosProdutos.filter(p => ehDestaque(p));
+        title.innerHTML = '<span>⭐</span><span>Destaques</span>';
+      } else if (aba === 'todos') {
+        produtosFiltrados = todosProdutos;
+        title.innerHTML = '<span>📦</span><span>Todos os Produtos</span>';
+      } else {
+        produtosFiltrados = todosProdutos.filter(p => (p.categoria || 'Eletrônicos') === aba);
+        title.innerHTML = `<span>📦</span><span>${aba}</span>`;
+      }
+      
+      renderizarProdutos(produtosFiltrados);
+    }
+
+    function criarAbas(produtos) {
+      const categorias = [...new Set(produtos.map(p => p.categoria || 'Eletrônicos'))];
+      const container = document.getElementById('tabs');
+      
+      const botoesCategorias = categorias.map(cat => 
+        `<button class="tab" data-tab="${cat}">${cat}</button>`
       ).join('');
       
-      container.innerHTML = '<button class="filtro-btn ativo" data-categoria="todos">Todos</button>' + botoes;
+      container.innerHTML = `
+        <button class="tab ativo" data-tab="destaques">⭐ Destaques</button>
+        <button class="tab" data-tab="todos">Todos</button>
+        ${botoesCategorias}
+      `;
 
-      document.querySelectorAll('.filtro-btn').forEach(btn => {
+      document.querySelectorAll('.tab').forEach(btn => {
         btn.addEventListener('click', () => {
-          document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('ativo'));
-          btn.classList.add('ativo');
-          
-          categoriaAtual = btn.dataset.categoria;
-          const filtrados = categoriaAtual === 'todos' 
-            ? todosProdutos 
-            : todosProdutos.filter(p => (p.categoria || 'Eletrônicos') === categoriaAtual);
-          
-          renderizarProdutos(filtrados);
+          atualizarAba(btn.dataset.tab);
         });
       });
     }
@@ -437,8 +491,8 @@
           return 0;
         });
 
-        criarFiltros(todosProdutos);
-        renderizarProdutos(todosProdutos);
+        criarAbas(todosProdutos);
+        atualizarAba('destaques'); // Começa na aba Destaques
       } catch (error) {
         document.getElementById('produtos').innerHTML = 
           '<div class="loading">Erro ao carregar produtos. Tente novamente.</div>';
