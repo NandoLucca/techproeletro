@@ -86,7 +86,16 @@
     .card-produto { background: rgba(20, 18, 50, 0.7); border-radius: 24px; overflow: hidden; backdrop-filter: blur(15px); border: 1px solid rgba(139, 92, 246, 0.25); transition: all 0.4s; }
     .card-produto:hover { transform: translateY(-10px); box-shadow: 0 20px 50px rgba(139, 92, 246, 0.5); border-color: rgba(168, 85, 247, 0.8); }
     .card-img-container { background: white; padding: 30px; position: relative; height: 320px; display: flex; align-items: center; justify-content: center; }
-    .card-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .card-img { 
+      width: 100%; 
+      height: auto; 
+      max-width: 100%; 
+      max-height: 100%; 
+      object-fit: contain; 
+      aspect-ratio: 1 / 1;
+      background: #1a1a1a;
+      transition: transform 0.3s ease;
+    }
     .badge-categoria { position: absolute; top: 18px; left: 18px; background: rgba(20, 18, 50, 0.95); color: #e9d5ff; padding: 8px 18px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
     .badge-oferta { position: absolute; top: 18px; right: 18px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 8px 18px; border-radius: 20px; font-size: 11px; font-weight: 900; box-shadow: 0 4px 20px rgba(245, 87, 108, 0.5); animation: pulse 2s infinite; letter-spacing: 0.5px; }
     @keyframes pulse { 0%, 100% { transform: scale(1); box-shadow: 0 4px 20px rgba(245, 87, 108, 0.5); } 50% { transform: scale(1.08); box-shadow: 0 6px 30px rgba(245, 87, 108, 0.7); } }
@@ -167,6 +176,7 @@
           <span style="color:#64748b; font-size:12px;">Respondemos em até 24h úteis</span>
         </p>
       </div>
+    </div>
     <div class="footer-bottom">
       <p style="margin-bottom:12px; color:#a855f7; font-weight:600;">COMPRA SEGURA VIA AMAZON</p>
       <p>© 2026 TechProEletro - Todos os direitos reservados</p>
@@ -197,12 +207,18 @@
         container.innerHTML = '<div class="loading">Nenhum produto encontrado.</div>';
         return;
       }
-      container.innerHTML = produtos.map(produto => `
+      container.innerHTML = produtos.map((produto, index) => `
         <div class="card-produto">
           <div class="card-img-container">
             <span class="badge-categoria">${produto.categoria || 'ELETRÔNICOS'}</span>
             ${ehDestaque(produto) ? '<span class="badge-oferta">OFERTA</span>' : ''}
-            <img src="${produto.img}" alt="${produto.nome}" class="card-img" loading="lazy">
+            <img src="${produto.img}" 
+                 alt="${produto.nome}" 
+                 class="card-img" 
+                 loading="${index === 0 ? 'eager' : 'lazy'}"
+                 fetchpriority="${index === 0 ? 'high' : 'auto'}"
+                 width="280" 
+                 height="280">
           </div>
           <div class="card-conteudo">
             <h3 class="card-nome">${produto.nome}</h3>
