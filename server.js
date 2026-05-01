@@ -3,7 +3,35 @@ const { createClient } = require('@supabase/supabase-js');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// ========================================
+// CONFIGURAÇÃO DE SEGURANÇA - TROCA A SENHA!
+// ========================================
+const SENHA_ADMIN = 'Fhl330282@'; // TROCA ESSA SENHA AGORA
+// ========================================
+
 app.use(express.json());
+
+// PROTEÇÃO DO ADMIN - BLOQUEIA ACESSO SEM SENHA
+app.use('/admin', (req, res, next) => {
+  const { authorization } = req.headers;
+
+  if (!authorization) {
+    res.setHeader('WWW-Authenticate', 'Basic realm="Admin TechProEletro"');
+    return res.status(401).send('Acesso negado - Admin protegido');
+  }
+
+  const base64Credentials = authorization.split(' ')[1];
+  const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
+  const [username, password] = credentials.split(':');
+
+  if (password === SENHA_ADMIN) {
+    return next();
+  }
+
+  res.setHeader('WWW-Authenticate', 'Basic realm="Admin TechProEletro"');
+  return res.status(401).send('Senha incorreta');
+});
+
 app.use(express.static('public'));
 
 const supabase = createClient(
