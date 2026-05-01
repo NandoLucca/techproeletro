@@ -55,7 +55,6 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      /* GLOW MAIS SUAVE - TIREI 60% DO BRILHO */
       text-shadow: 0 0 15px rgba(168, 85, 247, 0.4), 
                    0 2px 8px rgba(139, 92, 246, 0.3);
       filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.4));
@@ -96,7 +95,6 @@
       color: #94a3b8;
     }
 
-    /* ABAS DESTAQUES + CATEGORIAS */
     .tabs-container {
       max-width: 1400px;
       margin: 0 auto;
@@ -231,7 +229,7 @@
       font-size: 15px;
       font-weight: 600;
       color: #f1f5f9;
-      margin-bottom: 22px;
+      margin-bottom: 24px;
       line-height: 1.6;
       min-height: 48px;
       display: -webkit-box;
@@ -240,34 +238,13 @@
       overflow: hidden;
     }
 
-    .card-preco {
-      margin-bottom: 24px;
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-    }
-
-    .preco {
-      font-size: 36px;
-      font-weight: 900;
-      background: linear-gradient(90deg, #a855f7 0%, #ec4899 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .a-vista {
-      font-size: 13px;
-      color: #a855f7;
-      font-weight: 700;
-    }
-
-    .btn-comprar {
+    /* NOVO BOTÃO AMARELO - VER OFERTA */
+    .btn-ver-oferta {
       width: 100%;
       padding: 18px;
-      background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #ec4899 100%);
-      color: white;
-      border: none;
+      background: #FFD814;
+      color: #0F1111;
+      border: 2px solid #FCD200;
       border-radius: 14px;
       font-size: 15px;
       font-weight: 800;
@@ -276,14 +253,21 @@
       text-decoration: none;
       text-align: center;
       display: block;
-      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+      box-shadow: 0 6px 20px rgba(255, 216, 20, 0.4);
       text-transform: uppercase;
       letter-spacing: 1px;
+      animation: pulse-amarelo 2s infinite;
     }
 
-    .btn-comprar:hover {
+    .btn-ver-oferta:hover {
+      background: #F7CA00;
       transform: scale(1.04);
-      box-shadow: 0 8px 30px rgba(139, 92, 246, 0.8);
+      box-shadow: 0 8px 30px rgba(255, 216, 20, 0.6);
+    }
+
+    @keyframes pulse-amarelo {
+      0%, 100% { box-shadow: 0 6px 20px rgba(255, 216, 20, 0.4); }
+      50% { box-shadow: 0 6px 30px rgba(255, 216, 20, 0.7); }
     }
 
     .loading {
@@ -319,9 +303,6 @@
         margin-left: 0;
         text-align: center;
       }
-      .preco {
-        font-size: 30px;
-      }
       .tabs {
         overflow-x: auto;
       }
@@ -341,7 +322,6 @@
     </div>
   </header>
 
-  <!-- ABAS: DESTAQUES E CATEGORIAS -->
   <div class="tabs-container">
     <div class="tabs" id="tabs">
       <button class="tab ativo" data-tab="destaques">⭐ Destaques</button>
@@ -368,14 +348,6 @@
   <script>
     let todosProdutos = [];
     let abaAtual = 'destaques';
-
-    function formatarPreco(valor) {
-      if (!valor) return 'Consulte';
-      return Number(valor).toLocaleString('pt-BR', { 
-        style: 'currency', 
-        currency: 'BRL' 
-      });
-    }
 
     function rastrearClique(produto) {
       gtag('event', 'clique_afiliado', {
@@ -411,15 +383,11 @@
           </div>
           <div class="card-conteudo">
             <h3 class="card-nome">${produto.nome}</h3>
-            <div class="card-preco">
-              <span class="preco">${formatarPreco(produto.preco)}</span>
-              <span class="a-vista">à vista</span>
-            </div>
             <a href="${produto.link}" 
                target="_blank" 
-               class="btn-comprar"
+               class="btn-ver-oferta"
                onclick="rastrearClique(${JSON.stringify(produto).replace(/"/g, '&quot;')})">
-               COMPRAR AGORA
+               VER OFERTA
             </a>
           </div>
         </div>
@@ -469,7 +437,6 @@
       });
     }
 
-    // Busca em tempo real
     document.getElementById('busca').addEventListener('input', (e) => {
       const termo = e.target.value.toLowerCase();
       const filtrados = todosProdutos.filter(p => 
@@ -484,7 +451,6 @@
         const res = await fetch('/api/produtos');
         todosProdutos = await res.json();
         
-        // Ordena: destaques primeiro
         todosProdutos.sort((a, b) => {
           if (ehDestaque(a) && !ehDestaque(b)) return -1;
           if (!ehDestaque(a) && ehDestaque(b)) return 1;
@@ -492,7 +458,7 @@
         });
 
         criarAbas(todosProdutos);
-        atualizarAba('destaques'); // Começa na aba Destaques
+        atualizarAba('destaques');
       } catch (error) {
         document.getElementById('produtos').innerHTML = 
           '<div class="loading">Erro ao carregar produtos. Tente novamente.</div>';
