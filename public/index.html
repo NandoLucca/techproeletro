@@ -45,7 +45,7 @@
     }
 
     .logo-area h1 {
-      font-size: 38px;
+      font-size: 40px;
       font-weight: 900;
       background: linear-gradient(90deg, #8b5cf6 0%, #a855f7 50%, #ec4899 100%);
       -webkit-background-clip: text;
@@ -54,15 +54,17 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      text-shadow: 0 0 30px rgba(168, 85, 247, 0.5);
-      filter: drop-shadow(0 4px 8px rgba(139, 92, 246, 0.4));
+      text-shadow: 0 0 25px rgba(168, 85, 247, 0.9), 
+                   0 0 50px rgba(139, 92, 246, 0.7),
+                   0 5px 15px rgba(139, 92, 246, 1);
+      filter: drop-shadow(0 8px 16px rgba(139, 92, 246, 0.8));
     }
 
     .logo-area p {
       font-size: 14px;
       color: #cbd5e1;
       margin-top: 5px;
-      margin-left: 50px;
+      margin-left: 52px;
     }
 
     .search-box {
@@ -191,6 +193,12 @@
       font-size: 12px;
       font-weight: 800;
       box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
     }
 
     .card-conteudo {
@@ -226,7 +234,6 @@
       background-clip: text;
     }
 
-    /* ÚNICA ADIÇÃO: À VISTA */
     .a-vista {
       font-size: 13px;
       color: #a855f7;
@@ -343,6 +350,14 @@
       });
     }
 
+    function ehDestaque(produto) {
+      return produto.destaque === true || 
+             produto.destaque === 'true' || 
+             produto.destaque === 1 || 
+             produto.destaque === '1' ||
+             produto.destaque === 'on';
+    }
+
     function renderizarProdutos(produtos) {
       const container = document.getElementById('produtos');
       
@@ -355,7 +370,7 @@
         <div class="card-produto">
           <div class="card-img-container">
             <span class="badge-categoria">${produto.categoria || 'Eletrônicos'}</span>
-            ${produto.destaque ? '<span class="badge-oferta">OFERTA</span>' : ''}
+            ${ehDestaque(produto) ? '<span class="badge-oferta">OFERTA</span>' : ''}
             <img src="${produto.img}" alt="${produto.nome}" class="card-img" loading="lazy">
           </div>
           <div class="card-conteudo">
@@ -417,8 +432,8 @@
         
         // Ordena: destaques primeiro
         todosProdutos.sort((a, b) => {
-          if (a.destaque && !b.destaque) return -1;
-          if (!a.destaque && b.destaque) return 1;
+          if (ehDestaque(a) && !ehDestaque(b)) return -1;
+          if (!ehDestaque(a) && ehDestaque(b)) return 1;
           return 0;
         });
 
