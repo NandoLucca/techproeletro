@@ -90,8 +90,8 @@
     .card-produto { background: rgba(20, 18, 50, 0.7); border-radius: 20px; overflow: hidden; backdrop-filter: blur(15px); border: 1px solid rgba(139, 92, 246, 0.25); transition: all 0.4s; }
     .card-produto:hover { transform: translateY(-8px); box-shadow: 0 15px 40px rgba(139, 92, 246, 0.5); border-color: rgba(168, 85, 247, 0.8); }
     .card-img-container { 
-      background: white; 
-      padding: 15px; 
+      background: #fff; 
+      padding: 10px; 
       position: relative; 
       height: 160px; 
       display: flex; 
@@ -101,11 +101,10 @@
     .card-img { 
       width: auto; 
       height: auto; 
-      max-width: 120px; 
-      max-height: 120px; 
+      max-width: 100%; 
+      max-height: 100%; 
       object-fit: contain; 
-      aspect-ratio: 1 / 1;
-      background: #1a1a1a;
+      background: #fff;
       transition: transform 0.3s ease;
     }
     .badge-categoria { position: absolute; top: 12px; left: 12px; background: rgba(20, 18, 50, 0.95); color: #e9d5ff; padding: 6px 14px; border-radius: 20px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -124,7 +123,7 @@
     .footer-col a:hover { color: #e9d5ff; }
     .footer-bottom { border-top: 1px solid rgba(139, 92, 246, 0.2); margin-top: 40px; padding-top: 25px; text-align: center; color: #64748b; font-size: 12px; }
     .footer-bottom p { margin: 8px 0; }
-    @media (max-width: 768px) { .header-content { flex-direction: column; } .search-box input { width: 100%; } .grid-produtos { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; } .logo-area h1 { font-size: 32px; } .logo-area p { margin-left: 0; text-align: center; } .tabs { overflow-x: auto; } .footer-content { text-align: center; } .card-img-container { height: 140px; padding: 12px; } .card-img { max-width: 100px; max-height: 100px; } }
+    @media (max-width: 768px) { .header-content { flex-direction: column; } .search-box input { width: 100%; } .grid-produtos { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; } .logo-area h1 { font-size: 32px; } .logo-area p { margin-left: 0; text-align: center; } .tabs { overflow-x: auto; } .footer-content { text-align: center; } .card-img-container { height: 140px; padding: 8px; } .card-img { max-width: 100%; max-height: 100%; } }
   </style>
 </head>
 <body>
@@ -188,7 +187,6 @@
           <span style="color:#64748b; font-size:12px;">Respondemos em até 24h úteis</span>
         </p>
       </div>
-    </div>
     <div class="footer-bottom">
       <p style="margin-bottom:12px; color:#a855f7; font-weight:600;">COMPRA SEGURA VIA AMAZON</p>
       <p>© 2026 TechProEletro - Todos os direitos reservados</p>
