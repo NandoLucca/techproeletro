@@ -45,21 +45,24 @@
     }
 
     .logo-area h1 {
-      font-size: 36px;
-      font-weight: 800;
-      background: linear-gradient(90deg, #a855f7 0%, #ec4899 100%);
+      font-size: 38px;
+      font-weight: 900;
+      background: linear-gradient(90deg, #8b5cf6 0%, #a855f7 50%, #ec4899 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+      text-shadow: 0 0 30px rgba(168, 85, 247, 0.5);
+      filter: drop-shadow(0 4px 8px rgba(139, 92, 246, 0.4));
     }
 
     .logo-area p {
       font-size: 14px;
       color: #cbd5e1;
       margin-top: 5px;
+      margin-left: 50px;
     }
 
     .search-box {
@@ -73,7 +76,7 @@
       background: rgba(255,255,255,0.1);
       color: white;
       border-radius: 25px;
-      width: 300px;
+      width: 320px;
       font-size: 14px;
       outline: none;
       transition: all 0.3s;
@@ -81,7 +84,8 @@
 
     .search-box input:focus {
       background: rgba(255,255,255,0.15);
-      box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+      border-color: #a855f7;
     }
 
     .search-box input::placeholder {
@@ -103,7 +107,7 @@
     }
 
     .filtro-btn {
-      padding: 12px 28px;
+      padding: 12px 32px;
       border: none;
       background: rgba(139, 92, 246, 0.2);
       color: #e9d5ff;
@@ -123,12 +127,12 @@
     .filtro-btn.ativo {
       background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
       color: white;
-      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+      box-shadow: 0 4px 20px rgba(139, 92, 246, 0.5);
     }
 
     .grid-produtos {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       gap: 30px;
     }
 
@@ -143,15 +147,15 @@
 
     .card-produto:hover {
       transform: translateY(-8px);
-      box-shadow: 0 15px 40px rgba(139, 92, 246, 0.3);
-      border-color: rgba(139, 92, 246, 0.5);
+      box-shadow: 0 15px 40px rgba(139, 92, 246, 0.4);
+      border-color: rgba(168, 85, 247, 0.6);
     }
 
     .card-img-container {
       background: white;
-      padding: 20px;
+      padding: 25px;
       position: relative;
-      height: 280px;
+      height: 300px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -167,12 +171,13 @@
       position: absolute;
       top: 15px;
       left: 15px;
-      background: rgba(30, 27, 75, 0.9);
+      background: rgba(30, 27, 75, 0.95);
       color: #e9d5ff;
-      padding: 6px 14px;
+      padding: 7px 16px;
       border-radius: 20px;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
+      text-transform: uppercase;
     }
 
     .badge-oferta {
@@ -181,10 +186,11 @@
       right: 15px;
       background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
       color: white;
-      padding: 6px 14px;
+      padding: 7px 16px;
       border-radius: 20px;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
+      box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
     }
 
     .card-conteudo {
@@ -195,7 +201,7 @@
       font-size: 16px;
       font-weight: 600;
       color: #f1f5f9;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
       line-height: 1.5;
       min-height: 48px;
       display: -webkit-box;
@@ -212,7 +218,7 @@
     }
 
     .preco {
-      font-size: 32px;
+      font-size: 34px;
       font-weight: 800;
       background: linear-gradient(90deg, #a855f7 0%, #ec4899 100%);
       -webkit-background-clip: text;
@@ -220,18 +226,17 @@
       background-clip: text;
     }
 
-    /* ÚNICA COISA NOVA: ADICIONEI ISSO */
+    /* ÚNICA ADIÇÃO: À VISTA */
     .a-vista {
       font-size: 13px;
-      color: #10b981;
+      color: #a855f7;
       font-weight: 600;
     }
-    /* FIM DA MUDANÇA */
 
     .btn-comprar {
       width: 100%;
       padding: 16px;
-      background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+      background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #ec4899 100%);
       color: white;
       border: none;
       border-radius: 12px;
@@ -243,11 +248,12 @@
       text-align: center;
       display: block;
       box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+      text-transform: uppercase;
     }
 
     .btn-comprar:hover {
-      transform: scale(1.02);
-      box-shadow: 0 6px 25px rgba(139, 92, 246, 0.6);
+      transform: scale(1.03);
+      box-shadow: 0 6px 25px rgba(139, 92, 246, 0.7);
     }
 
     .loading {
@@ -277,10 +283,13 @@
         grid-template-columns: 1fr;
       }
       .logo-area h1 {
-        font-size: 28px;
+        font-size: 30px;
+      }
+      .logo-area p {
+        margin-left: 0;
       }
       .preco {
-        font-size: 26px;
+        font-size: 28px;
       }
     }
   </style>
@@ -406,6 +415,7 @@
         const res = await fetch('/api/produtos');
         todosProdutos = await res.json();
         
+        // Ordena: destaques primeiro
         todosProdutos.sort((a, b) => {
           if (a.destaque && !b.destaque) return -1;
           if (!a.destaque && b.destaque) return 1;
