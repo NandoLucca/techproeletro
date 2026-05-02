@@ -4,24 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- SEO BÁSICO -->
-  <title>TechProEletro - Setup Gamer com Preço Justo | Mouse, Teclado, Headset</title>
-  <meta name="description" content="Curadoria de setup gamer com melhor custo-benefício. Mouse, teclado, headset e monitor com compra segura via Amazon. Preço justo de Jardinópolis-SP para todo Brasil.">
-  <meta name="keywords" content="setup gamer, mouse gamer, teclado mecanico, headset gamer, monitor gamer, techproeletro, amazon">
+  <!-- SEO BÁSICO - OTIMIZADO PRA CONVERSÃO -->
+  <title>TechProEletro - Setup Gamer Barato com Melhor Custo-Benefício</title>
+  <meta name="description" content="Mouse, teclado, headset e upgrades selecionados pra você gastar menos e jogar melhor. Compra segura via Amazon com entrega rápida.">
+  <meta name="keywords" content="setup gamer barato, mouse gamer custo beneficio, teclado mecanico barato, headset gamer, upgrade ssd ram, techproeletro">
   <meta name="author" content="TechProEletro">
   <meta name="robots" content="index, follow">
   
   <!-- OPEN GRAPH -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://techproeletro.com.br/">
-  <meta property="og:title" content="TechProEletro - Setup Gamer Preço Justo">
-  <meta property="og:description" content="Mouse, teclado, headset gamer com curadoria. Compra segura via Amazon.">
+  <meta property="og:title" content="TechProEletro - Setup Gamer Barato com Melhor Custo-Benefício">
+  <meta property="og:description" content="Mouse, teclado, headset e upgrades selecionados pra você gastar menos e jogar melhor.">
   <meta property="og:image" content="https://techproeletro.com.br/logo.png">
   
   <!-- TWITTER CARD -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="TechProEletro - Setup Gamer">
-  <meta name="twitter:description" content="Setup gamer com preço justo. Compra segura Amazon.">
+  <meta name="twitter:title" content="TechProEletro - Setup Gamer Barato">
+  <meta name="twitter:description" content="Setup gamer com melhor custo-benefício. Gaste menos, jogue melhor.">
   <meta name="twitter:image" content="https://techproeletro.com.br/logo.png">
   
   <!-- FAVICON TECHPROELETRO -->
@@ -70,7 +70,7 @@
     header { background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); padding: 25px 20px; box-shadow: 0 4px 30px rgba(168, 85, 247, 0.2); border-bottom: 1px solid rgba(168, 85, 247, 0.2); }
     .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
     .logo-area h1 { font-size: 42px; font-weight: 900; background: linear-gradient(90deg, #8b5cf6 0%, #a855f7 50%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: flex; align-items: center; gap: 12px; text-shadow: 0 0 15px rgba(168, 85, 247, 0.4), 0 2px 8px rgba(139, 92, 246, 0.3); filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.4)); }
-    .logo-area p { font-size: 14px; color: #cbd5e1; margin-top: 8px; margin-left: 54px; }
+    .logo-area p { font-size: 15px; color: #e9d5ff; margin-top: 8px; margin-left: 54px; font-weight: 600; }
     .search-box { position: relative; }
     .search-box input { padding: 14px 24px; padding-right: 50px; border: 2px solid #8b5cf6; background: rgba(255,255,255,0.08); color: white; border-radius: 30px; width: 340px; font-size: 14px; outline: none; transition: all 0.3s; backdrop-filter: blur(10px); }
     .search-box input:focus { background: rgba(255,255,255,0.12); box-shadow: 0 0 30px rgba(139, 92, 246, 0.4); border-color: #a855f7; }
@@ -131,7 +131,7 @@
     <div class="header-content">
       <div class="logo-area">
         <h1>🚀 TechProEletro</h1>
-        <p>Tecnologia e Inovação</p>
+        <p>Setup gamer barato com melhor custo-benefício</p>
       </div>
       <div class="search-box">
         <input type="text" id="busca" placeholder="Buscar produto...">
@@ -161,7 +161,7 @@
       <div class="footer-col">
         <h3>🚀 TechProEletro</h3>
         <p style="color:#cbd5e1; line-height:1.8;">
-          Setup Gamer com curadoria e preço justo.<br>
+          Mouse, teclado, headset e upgrades selecionados pra você gastar menos e jogar melhor.<br>
           Loja virtual em Jardinópolis - SP
         </p>
         <p style="margin-top:15px;">
@@ -257,7 +257,6 @@
     }
 
     function criarAbas(produtos) {
-      // Pega categorias únicas e renomeia "Setup Gamer Mobile" pra "Acessórios Mobile"
       const categorias = [...new Set(produtos.map(p => {
         let cat = p.categoria || 'Eletrônicos';
         if (cat === 'Setup Gamer Mobile') cat = 'Acessórios Mobile';
@@ -269,7 +268,6 @@
         `<button class="tab" data-tab="${cat}">${cat}</button>`
       ).join('');
       
-      // Sem a aba "Todos" agora
       container.innerHTML = `
         <button class="tab ativo" data-tab="destaques">⭐ Destaques</button>
         ${botoesCategorias}
@@ -296,7 +294,6 @@
         const res = await fetch('/api/produtos');
         todosProdutos = await res.json();
         
-        // Converte "Setup Gamer Mobile" pra "Acessórios Mobile" nos produtos também
         todosProdutos = todosProdutos.map(p => {
           if (p.categoria === 'Setup Gamer Mobile') {
             return {...p, categoria: 'Acessórios Mobile'};
