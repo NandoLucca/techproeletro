@@ -1,124 +1,145 @@
 <script>
-const form = document.getElementById('formProduto');
-const lista = document.getElementById('listaProdutos');
-
-// Função pra normalizar nome e comparar certo
-const normalizarNome = (str) => {
-  return str
-    .trim()
-    .toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove acento
-    .replace(/\s+/g, ' '); // Remove espaço duplo
-};
-
-async function carregarProdutos() {
-  const res = await fetch('/api/produtos');
-  const produtos = await res.json();
-
-  lista.innerHTML = '';
-  produtos.forEach(p => {
-    const precoFormatado = p.preco? `R$ ${parseFloat(p.preco).toFixed(2).replace('.', ',')}` : 'Consulte';
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${p.id}</td>
-      <td><img src="${p.img}" class="produto-img" alt="${p.nome}" onerror="this.src='https://via.placeholder.com/60/667eea/ffffff?text=X'"></td>
-      <td>
-        <strong>${p.nome}</strong>
-        ${p.destaque? '<span class="badge-destaque">⭐ DESTAQUE</span>' : ''}
-      </td>
-      <td><span class="categoria-tag">${p.categoria || 'Geral'}</span></td>
-      <td>${precoFormatado}</td>
-      <td><a href="${p.link}" target="_blank">Abrir</a></td>
-      <td>
-        <div class="acoes">
-          <button class="btn-editar" data-produto='${JSON.stringify(p)}'>Editar</button>
-          <button class="btn-excluir" data-id="${p.id}">Excluir</button>
-        </div>
-      </td>
-    `;
-    lista.appendChild(tr);
-  });
-
-  document.querySelectorAll('.btn-editar').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const p = JSON.parse(e.target.dataset.produto);
-      editarProduto(p);
-    });
-  });
-
-  document.querySelectorAll('.btn-excluir').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      excluirProduto(e.target.dataset.id);
-    });
-  });
-}
-
-// 🚨 AQUI TÁ A BLINDAGEM ANTI-DUPLICATA 🚨
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const nome = document.getElementById('nome').value;
-  const preco = document.getElementById('preco').value;
-  const img = document.getElementById('img').value;
-  const link = document.getElementById('link').value;
-  const categoria = document.getElementById('categoria').value;
-  const destaque = document.getElementById('destaque').checked;
-
-  // BUSCA TODOS OS PRODUTOS PRA CHECAR DUPLICATA
-  const res = await fetch('/api/produtos');
-  const todosProdutos = await res.json();
+document.addEventListener('DOMContentLoaded', () => {
   
-  const nomeNovo = normalizarNome(nome);
-  const produtoDuplicado = todosProdutos.find(p => 
-    normalizarNome(p.nome) === nomeNovo
-  );
-  
-  if (produtoDuplicado) {
-    alert(`❌ OPA! Produto duplicado!\n\nJá existe: "${produtoDuplicado.nome}"\nID: ${produtoDuplicado.id}\n\nEdita o existente ou muda o nome.`);
-    document.getElementById('nome').focus();
-    return; // PARA AQUI, NÃO SALVA
+  const form = document.getElementById('formProduto');
+  const lista = document.getElementById('listaProdutos');
+
+  // Função pra normalizar nome e comparar certo
+  const normalizarNome = (str) => {
+    if (!str) return '';
+    return str
+      .trim()
+      .toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, ' ');
+  };
+
+  async function carregarProdutos() {
+    try {
+      const res = await fetch('/api/produtos');
+      const produtos = await res.json();
+
+      lista.innerHTML = '';
+      produtos.forEach(p => {
+        const precoFormatado = p.preco ? `R$ ${parseFloat(p.preco).toFixed(2).replace('.', ',')}` : 'Consulte';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${p.id}</td>
+          <td><img src="${p.img}" class="produto-img" alt="${p.nome}" onerror="this.src='https://via.placeholder.com/60/667eea/ffffff?text=X'"></td>
+          <td>
+            <strong>${p.nome}</strong>
+            ${p.destaque ? '<span class="badge-destaque">⭐ DESTAQUE</span>' : ''}
+          </td>
+          <td><span class="categoria-tag">${p.categoria || 'Geral'}</span></td>
+          <td>${precoFormatado}</td>
+          <td><a href="${p.link}" target="_blank">Abrir</a></td>
+          <td>
+            <div class="acoes">
+              <button class="btn-editar" data-produto='${JSON.stringify(p)}'>Editar</button>
+              <button class="btn-excluir" data-id="${p.id}">Excluir</button>
+            </div>
+          </td>
+        `;
+        lista.appendChild(tr);
+      });
+
+      document.querySelectorAll('.btn-editar').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const p = JSON.parse(e.target.dataset.produto);
+          editarProduto(p);
+        });
+      });
+
+      document.querySelectorAll('.btn-excluir').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          excluirProduto(e.target.dataset.id);
+        });
+      });
+    } catch (error) {
+      console.error('Erro ao carregar:', error);
+      lista.innerHTML = '<tr><td colspan="7">Erro ao carregar produtos</td></tr>';
+    }
   }
 
-  // Se passou na validação, salva normal
-  const btnSalvar = e.target.querySelector('button[type="submit"]');
-  btnSalvar.textContent = 'Salvando...';
-  btnSalvar.disabled = true;
+  // 🚨 VALIDAÇÃO ANTI-DUPLICATA 🚨
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const btnSalvar = e.target.querySelector('button[type="submit"]');
+    btnSalvar.textContent = 'Verificando...';
+    btnSalvar.disabled = true;
+    
+    const nome = document.getElementById('nome').value;
+    const preco = document.getElementById('preco').value;
+    const img = document.getElementById('img').value;
+    const link = document.getElementById('link').value;
+    const categoria = document.getElementById('categoria').value;
+    const destaque = document.getElementById('destaque').checked;
 
-  await fetch('/api/produtos', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ nome, preco, img, link, categoria, destaque })
+    try {
+      // BUSCA TODOS OS PRODUTOS PRA CHECAR DUPLICATA
+      const res = await fetch('/api/produtos');
+      const todosProdutos = await res.json();
+      
+      const nomeNovo = normalizarNome(nome);
+      const produtoDuplicado = todosProdutos.find(p => 
+        normalizarNome(p.nome) === nomeNovo
+      );
+      
+      if (produtoDuplicado) {
+        alert(`❌ OPA! Produto duplicado!\n\nJá existe: "${produtoDuplicado.nome}"\nID: ${produtoDuplicado.id}\n\nEdita o existente ou muda o nome.`);
+        document.getElementById('nome').focus();
+        return;
+      }
+
+      // Se passou na validação, salva
+      btnSalvar.textContent = 'Salvando...';
+      
+      await fetch('/api/produtos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, preco, img, link, categoria, destaque })
+      });
+
+      form.reset();
+      carregarProdutos();
+      alert('✅ Produto cadastrado com sucesso!');
+      
+    } catch (error) {
+      alert('❌ Erro ao salvar produto');
+      console.error(error);
+    } finally {
+      btnSalvar.textContent = 'Salvar no Supabase';
+      btnSalvar.disabled = false;
+    }
   });
 
-  btnSalvar.textContent = 'Salvar no Supabase';
-  btnSalvar.disabled = false;
-  form.reset();
+  function editarProduto(p) {
+    const nome = prompt('Nome:', p.nome);
+    if (!nome) return;
+
+    const preco = prompt('Preço:', p.preco);
+    const img = prompt('Imagem:', p.img);
+    const link = prompt('Link:', p.link);
+    const categoria = prompt('Categoria:', p.categoria);
+    const destaque = confirm('Marcar como DESTAQUE?');
+
+    fetch(`/api/produtos/${p.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nome, preco, img, link, categoria, destaque })
+    }).then(() => carregarProdutos());
+  }
+
+  async function excluirProduto(id) {
+    if (confirm('Tem certeza que quer excluir esse produto?')) {
+      await fetch(`/api/produtos/${id}`, { method: 'DELETE' });
+      carregarProdutos();
+    }
+  }
+
+  // Inicia tudo
   carregarProdutos();
-  alert('✅ Produto cadastrado com sucesso!');
-});
 
-function editarProduto(p) {
-  const nome = prompt('Nome:', p.nome);
-  if (!nome) return;
-
-  const preco = prompt('Preço:', p.preco);
-  const img = prompt('Imagem:', p.img);
-  const link = prompt('Link:', p.link);
-  const categoria = prompt('Categoria:', p.categoria);
-  const destaque = confirm('Marcar como DESTAQUE?');
-
-  fetch(`/api/produtos/${p.id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ nome, preco, img, link, categoria, destaque })
-  }).then(() => carregarProdutos());
-}
-
-async function excluirProduto(id) {
-  if (confirm('Tem certeza que quer excluir esse produto?')) {
-    await fetch(`/api/produtos/${id}`, { method: 'DELETE' });
-    carregarProdutos();
-  }
-}
-
-carregarProdutos();
+}); // Fecha o DOMContentLoaded
 </script>
