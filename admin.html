@@ -1,145 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - TechProEletro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+ .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    h1, h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    form {
+      background: #f8f9fa;
+      padding: 30px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      background: white;
+      border: 2px solid #e0e0;
+      border-radius: 8px;
+      color: #333;
+      font-size: 15px;
+    }
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+  .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+  .checkbox-wrapper input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+    }
+    button[type="submit"] {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+    button[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+ .divider { height: 1px; background: #e0e0e0; margin: 30px 0; }
+ .btn-atualizar {
+      padding: 10px 20px;
+      background: #4a5568;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      background: #f8f9fa;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+      border-bottom: 2px solid #e0e0e0;
+      font-size: 14px;
+    }
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #e0e0e0;
+      color: #333;
+      font-size: 14px;
+    }
+ .produto-img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 5px;
+    }
+ .categoria-tag {
+      display: inline-block;
+      background: #667eea;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+ .badge-destaque {
+      display: inline-block;
+      background: #f6ad55;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-left: 5px;
+    }
+ .acoes { display: flex; gap: 8px; }
+ .btn-editar {
+      padding: 6px 15px;
+      background: #f6ad55;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+    }
+ .btn-excluir {
+      padding: 6px 15px;
+      background: #f56565;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    a { color: #667eea; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📦 Cadastrar Produto</h1>
+
+    <form id="formProduto">
+      <label>Nome do produto</label>
+      <input type="text" id="nome" placeholder="Ex: Notebook Gamer" required>
+
+      <label>Preço</label>
+      <input type="text" id="preco" placeholder="Ex: R$ 2.999,90" required>
+
+      <label>Link da imagem</label>
+      <input type="text" id="img" placeholder="https://..." required>
+
+      <label>Link de afiliado</label>
+      <input type="text" id="link" placeholder="https://..." required>
+
+      <label>Categoria</label>
+      <input type="text" id="categoria" placeholder="Ex: Celulares, TVs, Áudio" required>
+
+      <div class="checkbox-wrapper">
+        <input type="checkbox" id="destaque">
+        <label for="destaque" style="margin: 0;">Marcar como Destaque na Home</label>
+      </div>
+
+      <button type="submit">Salvar no Supabase</button>
+    </form>
+
+    <div class="divider"></div>
+
+    <h2>📋 Produtos Cadastrados</h2>
+    <button class="btn-atualizar" onclick="carregarProdutos()">🔄 Atualizar Lista</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Imagem</th>
+          <th>Nome</th>
+          <th>Categoria</th>
+          <th>Preço</th>
+          <th>Link</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="listaProdutos"></tbody>
+    </table>
+  </div>
+
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  
-  const form = document.getElementById('formProduto');
-  const lista = document.getElementById('listaProdutos');
+const form = document.getElementById('formProduto');
+const lista = document.getElementById('listaProdutos');
 
-  // Função pra normalizar nome e comparar certo
-  const normalizarNome = (str) => {
-    if (!str) return '';
-    return str
-      .trim()
-      .toLowerCase()
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-      .replace(/\s+/g, ' ');
-  };
+async function carregarProdutos() {
+  const res = await fetch('/api/produtos');
+  const produtos = await res.json();
 
-  async function carregarProdutos() {
-    try {
-      const res = await fetch('/api/produtos');
-      const produtos = await res.json();
-
-      lista.innerHTML = '';
-      produtos.forEach(p => {
-        const precoFormatado = p.preco ? `R$ ${parseFloat(p.preco).toFixed(2).replace('.', ',')}` : 'Consulte';
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${p.id}</td>
-          <td><img src="${p.img}" class="produto-img" alt="${p.nome}" onerror="this.src='https://via.placeholder.com/60/667eea/ffffff?text=X'"></td>
-          <td>
-            <strong>${p.nome}</strong>
-            ${p.destaque ? '<span class="badge-destaque">⭐ DESTAQUE</span>' : ''}
-          </td>
-          <td><span class="categoria-tag">${p.categoria || 'Geral'}</span></td>
-          <td>${precoFormatado}</td>
-          <td><a href="${p.link}" target="_blank">Abrir</a></td>
-          <td>
-            <div class="acoes">
-              <button class="btn-editar" data-produto='${JSON.stringify(p)}'>Editar</button>
-              <button class="btn-excluir" data-id="${p.id}">Excluir</button>
-            </div>
-          </td>
-        `;
-        lista.appendChild(tr);
-      });
-
-      document.querySelectorAll('.btn-editar').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const p = JSON.parse(e.target.dataset.produto);
-          editarProduto(p);
-        });
-      });
-
-      document.querySelectorAll('.btn-excluir').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          excluirProduto(e.target.dataset.id);
-        });
-      });
-    } catch (error) {
-      console.error('Erro ao carregar:', error);
-      lista.innerHTML = '<tr><td colspan="7">Erro ao carregar produtos</td></tr>';
-    }
-  }
-
-  // 🚨 VALIDAÇÃO ANTI-DUPLICATA 🚨
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const btnSalvar = e.target.querySelector('button[type="submit"]');
-    btnSalvar.textContent = 'Verificando...';
-    btnSalvar.disabled = true;
-    
-    const nome = document.getElementById('nome').value;
-    const preco = document.getElementById('preco').value;
-    const img = document.getElementById('img').value;
-    const link = document.getElementById('link').value;
-    const categoria = document.getElementById('categoria').value;
-    const destaque = document.getElementById('destaque').checked;
-
-    try {
-      // BUSCA TODOS OS PRODUTOS PRA CHECAR DUPLICATA
-      const res = await fetch('/api/produtos');
-      const todosProdutos = await res.json();
-      
-      const nomeNovo = normalizarNome(nome);
-      const produtoDuplicado = todosProdutos.find(p => 
-        normalizarNome(p.nome) === nomeNovo
-      );
-      
-      if (produtoDuplicado) {
-        alert(`❌ OPA! Produto duplicado!\n\nJá existe: "${produtoDuplicado.nome}"\nID: ${produtoDuplicado.id}\n\nEdita o existente ou muda o nome.`);
-        document.getElementById('nome').focus();
-        return;
-      }
-
-      // Se passou na validação, salva
-      btnSalvar.textContent = 'Salvando...';
-      
-      await fetch('/api/produtos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, preco, img, link, categoria, destaque })
-      });
-
-      form.reset();
-      carregarProdutos();
-      alert('✅ Produto cadastrado com sucesso!');
-      
-    } catch (error) {
-      alert('❌ Erro ao salvar produto');
-      console.error(error);
-    } finally {
-      btnSalvar.textContent = 'Salvar no Supabase';
-      btnSalvar.disabled = false;
-    }
+  lista.innerHTML = '';
+  produtos.forEach(p => {
+    const precoFormatado = p.preco? `R$ ${parseFloat(p.preco).toFixed(2).replace('.', ',')}` : 'Consulte';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${p.id}</td>
+      <td><img src="${p.img}" class="produto-img" alt="${p.nome}" onerror="this.src='https://via.placeholder.com/60/667eea/ffffff?text=X'"></td>
+      <td>
+        <strong>${p.nome}</strong>
+        ${p.destaque? '<span class="badge-destaque">⭐ DESTAQUE</span>' : ''}
+      </td>
+      <td><span class="categoria-tag">${p.categoria || 'Geral'}</span></td>
+      <td>${precoFormatado}</td>
+      <td><a href="${p.link}" target="_blank">Abrir</a></td>
+      <td>
+        <div class="acoes">
+          <button class="btn-editar" data-produto='${JSON.stringify(p)}'>Editar</button>
+          <button class="btn-excluir" data-id="${p.id}">Excluir</button>
+        </div>
+      </td>
+    `;
+    lista.appendChild(tr);
   });
 
-  function editarProduto(p) {
-    const nome = prompt('Nome:', p.nome);
-    if (!nome) return;
+  // Event listeners corrigidos - sem bug de aspas
+  document.querySelectorAll('.btn-editar').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const p = JSON.parse(e.target.dataset.produto);
+      editarProduto(p);
+    });
+  });
 
-    const preco = prompt('Preço:', p.preco);
-    const img = prompt('Imagem:', p.img);
-    const link = prompt('Link:', p.link);
-    const categoria = prompt('Categoria:', p.categoria);
-    const destaque = confirm('Marcar como DESTAQUE?');
+  document.querySelectorAll('.btn-excluir').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      excluirProduto(e.target.dataset.id);
+    });
+  });
+}
 
-    fetch(`/api/produtos/${p.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nome, preco, img, link, categoria, destaque })
-    }).then(() => carregarProdutos());
-  }
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const nome = document.getElementById('nome').value;
+  const preco = document.getElementById('preco').value;
+  const img = document.getElementById('img').value;
+  const link = document.getElementById('link').value;
+  const categoria = document.getElementById('categoria').value;
+  const destaque = document.getElementById('destaque').checked;
 
-  async function excluirProduto(id) {
-    if (confirm('Tem certeza que quer excluir esse produto?')) {
-      await fetch(`/api/produtos/${id}`, { method: 'DELETE' });
-      carregarProdutos();
-    }
-  }
+  await fetch('/api/produtos', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome, preco, img, link, categoria, destaque })
+  });
 
-  // Inicia tudo
+  form.reset();
   carregarProdutos();
+});
 
-}); // Fecha o DOMContentLoaded
+function editarProduto(p) {
+  const nome = prompt('Nome:', p.nome);
+  if (!nome) return;
+
+  const preco = prompt('Preço:', p.preco);
+  const img = prompt('Imagem:', p.img);
+  const link = prompt('Link:', p.link);
+  const categoria = prompt('Categoria:', p.categoria);
+  const destaque = confirm('Marcar como DESTAQUE?');
+
+  fetch(`/api/produtos/${p.id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome, preco, img, link, categoria, destaque })
+  }).then(() => carregarProdutos());
+}
+
+async function excluirProduto(id) {
+  if (confirm('Tem certeza que quer excluir esse produto?')) {
+    await fetch(`/api/produtos/${id}`, { method: 'DELETE' });
+    carregarProdutos();
+  }
+}
+
+carregarProdutos();
 </script>
+</body>
+</html>
