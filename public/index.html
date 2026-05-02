@@ -142,13 +142,12 @@
   <div class="tabs-container">
     <div class="tabs" id="tabs">
       <button class="tab ativo" data-tab="destaques">⭐ Destaques</button>
-      <button class="tab" data-tab="todos">Todos</button>
     </div>
   </div>
 
   <div class="container">
     <div class="section-title" id="sectionTitle">
-      <span>📦</span>
+      <span>⭐</span>
       <span>Destaques</span>
     </div>
 
@@ -250,9 +249,6 @@
       if (aba === 'destaques') {
         produtosFiltrados = todosProdutos.filter(p => ehDestaque(p));
         title.innerHTML = '<span>⭐</span><span>Destaques</span>';
-      } else if (aba === 'todos') {
-        produtosFiltrados = todosProdutos;
-        title.innerHTML = '<span>📦</span><span>Todos os Produtos</span>';
       } else {
         produtosFiltrados = todosProdutos.filter(p => (p.categoria || 'Eletrônicos') === aba);
         title.innerHTML = `<span>📦</span><span>${aba}</span>`;
@@ -261,16 +257,24 @@
     }
 
     function criarAbas(produtos) {
-      const categorias = [...new Set(produtos.map(p => p.categoria || 'Eletrônicos'))];
+      // Pega categorias únicas e renomeia "Setup Gamer Mobile" pra "Acessórios Mobile"
+      const categorias = [...new Set(produtos.map(p => {
+        let cat = p.categoria || 'Eletrônicos';
+        if (cat === 'Setup Gamer Mobile') cat = 'Acessórios Mobile';
+        return cat;
+      }))];
+      
       const container = document.getElementById('tabs');
       const botoesCategorias = categorias.map(cat => 
         `<button class="tab" data-tab="${cat}">${cat}</button>`
       ).join('');
+      
+      // Sem a aba "Todos" agora
       container.innerHTML = `
         <button class="tab ativo" data-tab="destaques">⭐ Destaques</button>
-        <button class="tab" data-tab="todos">Todos</button>
         ${botoesCategorias}
       `;
+      
       document.querySelectorAll('.tab').forEach(btn => {
         btn.addEventListener('click', () => {
           atualizarAba(btn.dataset.tab);
@@ -291,6 +295,15 @@
       try {
         const res = await fetch('/api/produtos');
         todosProdutos = await res.json();
+        
+        // Converte "Setup Gamer Mobile" pra "Acessórios Mobile" nos produtos também
+        todosProdutos = todosProdutos.map(p => {
+          if (p.categoria === 'Setup Gamer Mobile') {
+            return {...p, categoria: 'Acessórios Mobile'};
+          }
+          return p;
+        });
+        
         todosProdutos.sort((a, b) => {
           if (ehDestaque(a) && !ehDestaque(b)) return -1;
           if (!ehDestaque(a) && ehDestaque(b)) return 1;
