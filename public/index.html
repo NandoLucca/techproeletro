@@ -137,6 +137,8 @@
       font-size: 14px; 
       transition: all 0.3s; 
       min-width: 45px;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
     .btn-pagina:hover { 
       background: rgba(139, 92, 246, 0.3); 
@@ -282,6 +284,7 @@
     let abaAtual = 'destaques';
     let paginaAtual = 1;
     const PRODUTOS_POR_PAGINA = 12;
+    let produtosFiltradosGlobal = [];
 
     function ehDestaque(produto) {
       return produto.destaque === true || 
@@ -292,6 +295,7 @@
     }
 
     function renderizarProdutos(produtos) {
+      produtosFiltradosGlobal = produtos;
       const container = document.getElementById('produtos');
       if (produtos.length === 0) {
         container.innerHTML = '<div class="loading">Nenhum produto encontrado.</div>';
@@ -343,52 +347,103 @@
       }
       
       paginacaoEl.style.display = 'flex';
-      
-      let html = '';
+      paginacaoEl.innerHTML = '';
       
       // Botão Anterior
-      html += `<button class="btn-pagina" onclick="mudarPagina(${paginaAtual - 1})" ${paginaAtual === 1 ? 'disabled' : ''}>← Anterior</button>`;
+      const btnAnterior = document.createElement('button');
+      btnAnterior.className = 'btn-pagina';
+      btnAnterior.textContent = '← Anterior';
+      btnAnterior.disabled = paginaAtual === 1;
+      btnAnterior.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (paginaAtual > 1) mudarPagina(paginaAtual - 1);
+      });
+      paginacaoEl.appendChild(btnAnterior);
       
       // Info da página
-      html += `<span class="info-pagina">Página ${paginaAtual} de ${totalPaginas}</span>`;
+      const info = document.createElement('span');
+      info.className = 'info-pagina';
+      info.textContent = `Página ${paginaAtual} de ${totalPaginas}`;
+      paginacaoEl.appendChild(info);
       
       // Botões de número - mostra só 5 páginas por vez
       let inicio = Math.max(1, paginaAtual - 2);
       let fim = Math.min(totalPaginas, paginaAtual + 2);
       
       if (inicio > 1) {
-        html += `<button class="btn-pagina" onclick="mudarPagina(1)">1</button>`;
-        if (inicio > 2) html += `<span style="color:#64748b;">...</span>`;
+        const btn1 = document.createElement('button');
+        btn1.className = 'btn-pagina';
+        btn1.textContent = '1';
+        btn1.addEventListener('click', (e) => {
+          e.preventDefault();
+          mudarPagina(1);
+        });
+        paginacaoEl.appendChild(btn1);
+        
+        if (inicio > 2) {
+          const dots = document.createElement('span');
+          dots.style.color = '#64748b';
+          dots.textContent = '...';
+          paginacaoEl.appendChild(dots);
+        }
       }
       
       for (let i = inicio; i <= fim; i++) {
-        html += `<button class="btn-pagina ${i === paginaAtual ? 'ativo' : ''}" onclick="mudarPagina(${i})">${i}</button>`;
+        const btn = document.createElement('button');
+        btn.className = `btn-pagina ${i === paginaAtual ? 'ativo' : ''}`;
+        btn.textContent = i;
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          mudarPagina(i);
+        });
+        paginacaoEl.appendChild(btn);
       }
       
       if (fim < totalPaginas) {
-        if (fim < totalPaginas - 1) html += `<span style="color:#64748b;">...</span>`;
-        html += `<button class="btn-pagina" onclick="mudarPagina(${totalPaginas})">${totalPaginas}</button>`;
+        if (fim < totalPaginas - 1) {
+          const dots = document.createElement('span');
+          dots.style.color = '#64748b';
+          dots.textContent = '...';
+          paginacaoEl.appendChild(dots);
+        }
+        const btnUltima = document.createElement('button');
+        btnUltima.className = 'btn-pagina';
+        btnUltima.textContent = totalPaginas;
+        btnUltima.addEventListener('click', (e) => {
+          e.preventDefault();
+          mudarPagina(totalPaginas);
+        });
+        paginacaoEl.appendChild(btnUltima);
       }
       
       // Botão Próxima
-      html += `<button class="btn-pagina" onclick="mudarPagina(${paginaAtual + 1})" ${paginaAtual === totalPaginas ? 'disabled' : ''}>Próxima →</button>`;
-      
-      paginacaoEl.innerHTML = html;
+      const btnProxima = document.createElement('button');
+      btnProxima.className = 'btn-pagina';
+      btnProxima.textContent = 'Próxima →';
+      btnProxima.disabled = paginaAtual === totalPaginas;
+      btnProxima.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (paginaAtual < totalPaginas) mudarPagina(paginaAtual + 1);
+      });
+      paginacaoEl.appendChild(btnProxima);
     }
 
     function mudarPagina(novaPagina) {
       paginaAtual = novaPagina;
-      // FIX MOBILE: Scrolla até os produtos, não pro topo total
-      document.getElementById('produtos').scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'start' 
-      });
-      atualizarAba(abaAtual);
+      renderizarProdutos(produtosFiltradosGlobal);
+      
+      // FIX MOBILE: Scrolla suave até o título sem dar refresh
+      setTimeout(() => {
+        const titulo = document.getElementById('sectionTitle');
+        const yOffset = -20;
+        const y = titulo.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }, 50);
     }
 
-    function atualizarAba(aba) {
+    function atualizarAba(aba, resetPagina = true) {
       abaAtual = aba;
-      paginaAtual = 1; // Reseta pra página 1 quando troca de aba
+      if (resetPagina) paginaAtual = 1;
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('ativo'));
       document.querySelector(`[data-tab="${aba}"]`).classList.add('ativo');
       const title = document.getElementById('sectionTitle');
@@ -422,14 +477,14 @@
       
       document.querySelectorAll('.tab').forEach(btn => {
         btn.addEventListener('click', () => {
-          atualizarAba(btn.dataset.tab);
+          atualizarAba(btn.dataset.tab, true);
         });
       });
     }
 
     document.getElementById('busca').addEventListener('input', (e) => {
       const termo = e.target.value.toLowerCase();
-      paginaAtual = 1; // Reseta pra página 1 quando busca
+      paginaAtual = 1;
       const filtrados = todosProdutos.filter(p => 
         p.nome.toLowerCase().includes(termo) || 
         (p.categoria || '').toLowerCase().includes(termo)
@@ -455,7 +510,7 @@
           return 0;
         });
         criarAbas(todosProdutos);
-        atualizarAba('destaques');
+        atualizarAba('destaques', true);
       } catch (error) {
         document.getElementById('produtos').innerHTML = 
           '<div class="loading">Erro ao carregar produtos. Tente novamente.</div>';
