@@ -116,6 +116,51 @@
     .btn-ver-oferta:hover { background: #F7CA00; transform: scale(1.04); box-shadow: 0 8px 30px rgba(255, 216, 20, 0.6); }
     @keyframes pulse-amarelo { 0%, 100% { box-shadow: 0 6px 20px rgba(255, 216, 20, 0.4); } 50% { box-shadow: 0 6px 30px rgba(255, 216, 20, 0.7); } }
     .loading { text-align: center; padding: 80px 20px; font-size: 18px; color: #cbd5e1; }
+    
+    /* PAGINAÇÃO - NOVO */
+    .paginacao { 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      gap: 8px; 
+      margin-top: 50px; 
+      flex-wrap: wrap;
+    }
+    .btn-pagina { 
+      padding: 12px 18px; 
+      background: rgba(139, 92, 246, 0.15); 
+      border: 2px solid rgba(139, 92, 246, 0.3); 
+      color: #e9d5ff; 
+      border-radius: 10px; 
+      cursor: pointer; 
+      font-weight: 700; 
+      font-size: 14px; 
+      transition: all 0.3s; 
+      min-width: 45px;
+    }
+    .btn-pagina:hover { 
+      background: rgba(139, 92, 246, 0.3); 
+      border-color: #a855f7; 
+      transform: translateY(-2px);
+    }
+    .btn-pagina.ativo { 
+      background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%); 
+      border-color: #a855f7; 
+      color: white; 
+      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4);
+    }
+    .btn-pagina:disabled { 
+      opacity: 0.4; 
+      cursor: not-allowed; 
+      transform: none;
+    }
+    .info-pagina {
+      color: #94a3b8;
+      font-size: 14px;
+      margin: 0 15px;
+      font-weight: 600;
+    }
+    
     footer { background: #0a0818; color: #94a3b8; padding: 50px 20px 30px; margin-top: 100px; border-top: 1px solid rgba(139, 92, 246, 0.3); }
     .footer-content { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; text-align: left; }
     .footer-col h3 { color: #a855f7; margin-bottom: 18px; font-size: 18px; font-weight: 700; }
@@ -124,7 +169,7 @@
     .footer-bottom { border-top: 1px solid rgba(139, 92, 246, 0.2); margin-top: 40px; padding-top: 25px; text-align: center; color: #64748b; font-size: 12px; }
     .footer-bottom p { margin: 8px 0; }
     
-    /* FIX SCROLL HORIZONTAL TABS MOBILE S24+ - INCREMENTADO */
+    /* FIX SCROLL HORIZONTAL TABS MOBILE S24+ */
     .tabs {
       display: flex !important;
       gap: 0 !important;
@@ -142,7 +187,7 @@
       flex-shrink: 0 !important;
       white-space: nowrap !important;
     }
-    /* No celular em pé */
+    
     @media (max-width: 768px) { 
       .header-content { flex-direction: column; } 
       .search-box input { width: 100%; } 
@@ -154,6 +199,9 @@
       .card-img { max-width: 100%; max-height: 100%; }
       .tabs-container { padding: 0 15px; }
       .tab { padding: 16px 25px; font-size: 14px; }
+      .paginacao { gap: 5px; }
+      .btn-pagina { padding: 10px 14px; font-size: 13px; min-width: 40px; }
+      .info-pagina { font-size: 12px; margin: 0 8px; }
     }
   </style>
 </head>
@@ -185,6 +233,9 @@
     <div class="grid-produtos" id="produtos">
       <div class="loading">Carregando ofertas...</div>
     </div>
+
+    <!-- PAGINAÇÃO - NOVO -->
+    <div class="paginacao" id="paginacao" style="display: none;"></div>
   </div>
 
   <footer>
@@ -217,7 +268,6 @@
           <span style="color:#64748b; font-size:12px;">Respondemos em até 24h úteis</span>
         </p>
       </div>
-    </div>
     <div class="footer-bottom">
       <p style="margin-bottom:12px; color:#a855f7; font-weight:600;">COMPRA SEGURA VIA AMAZON</p>
       <p>© 2026 TechProEletro - Todos os direitos reservados</p>
@@ -230,6 +280,8 @@
   <script>
     let todosProdutos = [];
     let abaAtual = 'destaques';
+    let paginaAtual = 1;
+    const PRODUTOS_POR_PAGINA = 12; // Muda aqui se quiser mais/menos produtos por página
 
     function ehDestaque(produto) {
       return produto.destaque === true || 
@@ -243,9 +295,16 @@
       const container = document.getElementById('produtos');
       if (produtos.length === 0) {
         container.innerHTML = '<div class="loading">Nenhum produto encontrado.</div>';
+        document.getElementById('paginacao').style.display = 'none';
         return;
       }
-      container.innerHTML = produtos.map((produto, index) => `
+      
+      // PAGINAÇÃO - Corta só os produtos da página atual
+      const inicio = (paginaAtual - 1) * PRODUTOS_POR_PAGINA;
+      const fim = inicio + PRODUTOS_POR_PAGINA;
+      const produtosPagina = produtos.slice(inicio, fim);
+      
+      container.innerHTML = produtosPagina.map((produto, index) => `
         <div class="card-produto">
           <div class="card-img-container">
             <span class="badge-categoria">${produto.categoria || 'ELETRÔNICOS'}</span>
@@ -269,10 +328,63 @@
           </div>
         </div>
       `).join('');
+      
+      // Renderiza botões de paginação
+      renderizarPaginacao(produtos.length);
+    }
+
+    function renderizarPaginacao(totalProdutos) {
+      const totalPaginas = Math.ceil(totalProdutos / PRODUTOS_POR_PAGINA);
+      const paginacaoEl = document.getElementById('paginacao');
+      
+      if (totalPaginas <= 1) {
+        paginacaoEl.style.display = 'none';
+        return;
+      }
+      
+      paginacaoEl.style.display = 'flex';
+      
+      let html = '';
+      
+      // Botão Anterior
+      html += `<button class="btn-pagina" onclick="mudarPagina(${paginaAtual - 1})" ${paginaAtual === 1 ? 'disabled' : ''}>← Anterior</button>`;
+      
+      // Info da página
+      html += `<span class="info-pagina">Página ${paginaAtual} de ${totalPaginas}</span>`;
+      
+      // Botões de número - mostra só 5 páginas por vez
+      let inicio = Math.max(1, paginaAtual - 2);
+      let fim = Math.min(totalPaginas, paginaAtual + 2);
+      
+      if (inicio > 1) {
+        html += `<button class="btn-pagina" onclick="mudarPagina(1)">1</button>`;
+        if (inicio > 2) html += `<span style="color:#64748b;">...</span>`;
+      }
+      
+      for (let i = inicio; i <= fim; i++) {
+        html += `<button class="btn-pagina ${i === paginaAtual ? 'ativo' : ''}" onclick="mudarPagina(${i})">${i}</button>`;
+      }
+      
+      if (fim < totalPaginas) {
+        if (fim < totalPaginas - 1) html += `<span style="color:#64748b;">...</span>`;
+        html += `<button class="btn-pagina" onclick="mudarPagina(${totalPaginas})">${totalPaginas}</button>`;
+      }
+      
+      // Botão Próxima
+      html += `<button class="btn-pagina" onclick="mudarPagina(${paginaAtual + 1})" ${paginaAtual === totalPaginas ? 'disabled' : ''}>Próxima →</button>`;
+      
+      paginacaoEl.innerHTML = html;
+    }
+
+    function mudarPagina(novaPagina) {
+      paginaAtual = novaPagina;
+      window.scrollTo({ top: 0, behavior: 'smooth' }); // Sobe pro topo quando muda página
+      atualizarAba(abaAtual);
     }
 
     function atualizarAba(aba) {
       abaAtual = aba;
+      paginaAtual = 1; // Reseta pra página 1 quando troca de aba
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('ativo'));
       document.querySelector(`[data-tab="${aba}"]`).classList.add('ativo');
       const title = document.getElementById('sectionTitle');
@@ -313,6 +425,7 @@
 
     document.getElementById('busca').addEventListener('input', (e) => {
       const termo = e.target.value.toLowerCase();
+      paginaAtual = 1; // Reseta pra página 1 quando busca
       const filtrados = todosProdutos.filter(p => 
         p.nome.toLowerCase().includes(termo) || 
         (p.categoria || '').toLowerCase().includes(termo)
