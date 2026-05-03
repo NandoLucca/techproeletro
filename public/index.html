@@ -81,7 +81,7 @@
     .tab:hover { color: #e9d5ff; background: rgba(139, 92, 246, 0.1); }
     .tab.ativo { color: #fff; border-bottom: 3px solid #a855f7; background: rgba(139, 92, 246, 0.15); }
     .container { max-width: 1400px; margin: 50px auto; padding: 0 20px; }
-    .section-title { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; font-size: 24px; font-weight: 700; color: #f1f5f9; }
+    .section-title { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; font-size: 24px; font-weight: 700; color: #f1f5f9; scroll-margin-top: 20px; }
     .grid-produtos { 
       display: grid; 
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
@@ -117,7 +117,7 @@
     @keyframes pulse-amarelo { 0%, 100% { box-shadow: 0 6px 20px rgba(255, 216, 20, 0.4); } 50% { box-shadow: 0 6px 30px rgba(255, 216, 20, 0.7); } }
     .loading { text-align: center; padding: 80px 20px; font-size: 18px; color: #cbd5e1; }
     
-    /* PAGINAÇÃO - NOVO */
+    /* PAGINAÇÃO */
     .paginacao { 
       display: flex; 
       justify-content: center; 
@@ -234,7 +234,7 @@
       <div class="loading">Carregando ofertas...</div>
     </div>
 
-    <!-- PAGINAÇÃO - NOVO -->
+    <!-- PAGINAÇÃO -->
     <div class="paginacao" id="paginacao" style="display: none;"></div>
   </div>
 
@@ -281,7 +281,7 @@
     let todosProdutos = [];
     let abaAtual = 'destaques';
     let paginaAtual = 1;
-    const PRODUTOS_POR_PAGINA = 12; // Muda aqui se quiser mais/menos produtos por página
+    const PRODUTOS_POR_PAGINA = 12;
 
     function ehDestaque(produto) {
       return produto.destaque === true || 
@@ -378,7 +378,11 @@
 
     function mudarPagina(novaPagina) {
       paginaAtual = novaPagina;
-      window.scrollTo({ top: 0, behavior: 'smooth' }); // Sobe pro topo quando muda página
+      // FIX MOBILE: Scrolla até os produtos, não pro topo total
+      document.getElementById('produtos').scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+      });
       atualizarAba(abaAtual);
     }
 
