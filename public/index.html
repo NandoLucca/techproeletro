@@ -123,7 +123,38 @@
     .footer-col a:hover { color: #e9d5ff; }
     .footer-bottom { border-top: 1px solid rgba(139, 92, 246, 0.2); margin-top: 40px; padding-top: 25px; text-align: center; color: #64748b; font-size: 12px; }
     .footer-bottom p { margin: 8px 0; }
-    @media (max-width: 768px) { .header-content { flex-direction: column; } .search-box input { width: 100%; } .grid-produtos { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; } .logo-area h1 { font-size: 32px; } .logo-area p { margin-left: 0; text-align: center; } .tabs { overflow-x: auto; } .footer-content { text-align: center; } .card-img-container { height: 140px; padding: 8px; } .card-img { max-width: 100%; max-height: 100%; } }
+    
+    /* FIX SCROLL HORIZONTAL TABS MOBILE S24+ - INCREMENTADO */
+    .tabs {
+      display: flex !important;
+      gap: 0 !important;
+      justify-content: flex-start !important;
+      overflow-x: auto !important;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      white-space: nowrap;
+    }
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+    .tab {
+      flex-shrink: 0 !important;
+      white-space: nowrap !important;
+    }
+    /* No celular em pé */
+    @media (max-width: 768px) { 
+      .header-content { flex-direction: column; } 
+      .search-box input { width: 100%; } 
+      .grid-produtos { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; } 
+      .logo-area h1 { font-size: 32px; } 
+      .logo-area p { margin-left: 0; text-align: center; } 
+      .footer-content { text-align: center; } 
+      .card-img-container { height: 140px; padding: 8px; } 
+      .card-img { max-width: 100%; max-height: 100%; }
+      .tabs-container { padding: 0 15px; }
+      .tab { padding: 16px 25px; font-size: 14px; }
+    }
   </style>
 </head>
 <body>
