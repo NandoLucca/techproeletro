@@ -1,7 +1,6 @@
 const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.static('public'));
@@ -29,7 +28,6 @@ app.post('/api/produtos', async (req, res) => {
   try {
     const { nome, preco, img, linkAmazon, linkShopee, link, categoria, destaque } = req.body;
     
-    // Validação: precisa ter pelo menos 1 link
     if (!linkAmazon && !linkShopee && !link) {
       return res.status(400).json({ erro: 'Informe pelo menos um link: Amazon ou Shopee' });
     }
@@ -42,7 +40,7 @@ app.post('/api/produtos', async (req, res) => {
         img,
         linkAmazon: linkAmazon || null,
         linkShopee: linkShopee || null,
-        link: link || null, // campo legado
+        link: link || null,
         categoria: categoria || 'Geral',
         destaque: destaque || false
       }])
@@ -54,7 +52,6 @@ app.post('/api/produtos', async (req, res) => {
       throw error;
     }
     
-    console.log('Produto inserido:', data.id);
     res.status(201).json(data);
   } catch (error) {
     console.error('Erro POST /api/produtos:', error);
@@ -111,6 +108,5 @@ app.delete('/api/produtos/:id', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
+// IMPORTANTE: Vercel usa isso, não app.listen()
+module.exports = app;
