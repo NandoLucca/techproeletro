@@ -9,6 +9,7 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+// GET todos os produtos
 app.get('/api/produtos', async (req, res) => {
   try {
     const { data, error } = await supabase
@@ -24,6 +25,7 @@ app.get('/api/produtos', async (req, res) => {
   }
 });
 
+// POST criar produto
 app.post('/api/produtos', async (req, res) => {
   try {
     const { nome, preco, img, linkAmazon, linkShopee, link, categoria, destaque } = req.body;
@@ -59,6 +61,7 @@ app.post('/api/produtos', async (req, res) => {
   }
 });
 
+// PUT editar produto
 app.put('/api/produtos/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -92,6 +95,7 @@ app.put('/api/produtos/:id', async (req, res) => {
   }
 });
 
+// DELETE produto
 app.delete('/api/produtos/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -108,4 +112,8 @@ app.delete('/api/produtos/:id', async (req, res) => {
   }
 });
 
-module.exports = app;
+// RENDER PRECISA DISSO AQUI
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
