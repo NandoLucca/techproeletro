@@ -14,6 +14,8 @@
     label { display: block; margin-bottom: 8px; color: #333; font-weight: 600; font-size: 14px; }
     input { width: 100%; padding: 12px 15px; margin-bottom: 20px; background: white; border: 2px solid #e0e0e0; border-radius: 8px; color: #333; font-size: 15px; }
     input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+    input.erro { border-color: #f56565; }
+    .hint { font-size: 12px; color: #718096; margin-top: -15px; margin-bottom: 15px; }
     .checkbox-wrapper { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
     .checkbox-wrapper input[type="checkbox"] { width: auto; margin: 0; }
     button[type="submit"] { width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 16px; transition: all 0.3s; }
@@ -43,22 +45,23 @@
     <div id="erroBox"></div>
 
     <form id="formProduto">
-      <label>Nome do produto</label>
+      <label>Nome do produto *</label>
       <input type="text" id="nome" placeholder="Ex: SSD NVMe 1TB Kingston" required>
 
-      <label>Preço</label>
+      <label>Preço *</label>
       <input type="text" id="preco" placeholder="Ex: R$ 299,90" required>
 
-      <label>Link da imagem</label>
+      <label>Link da imagem *</label>
       <input type="text" id="img" placeholder="https://..." required>
 
       <label>Link de afiliado Amazon</label>
       <input type="text" id="linkAmazon" placeholder="https://amzn.to/xxx">
+      <div class="hint">Preencha pelo menos Amazon ou Shopee</div>
 
       <label>Link de afiliado Shopee</label>
       <input type="text" id="linkShopee" placeholder="https://s.shopee.com.br/xxx">
 
-      <label>Categoria</label>
+      <label>Categoria *</label>
       <input type="text" id="categoria" placeholder="Ex: Upgrade SSD, Celulares, Áudio" required>
 
       <div class="checkbox-wrapper">
@@ -95,10 +98,13 @@ window.onload = function() {
   const form = document.getElementById('formProduto');
   const lista = document.getElementById('listaProdutos');
   const erroBox = document.getElementById('erroBox');
+  const inputAmazon = document.getElementById('linkAmazon');
+  const inputShopee = document.getElementById('linkShopee');
 
   function mostrarErro(msg) {
     erroBox.textContent = msg;
     erroBox.style.display = 'block';
+    setTimeout(() => erroBox.style.display = 'none', 5000);
   }
 
   const normalizarNome = (str) => {
@@ -109,12 +115,12 @@ window.onload = function() {
   async function carregarProdutos() {
     try {
       const res = await fetch('/api/produtos');
+      if (!res.ok) throw new Error('API fora do ar');
       const produtos = await res.json();
       lista.innerHTML = '';
       produtos.forEach(p => {
         const precoFormatado = p.preco ? `R$ ${parseFloat(p.preco).toFixed(2).replace('.', ',')}` : 'Consulte';
         
-        // Renderiza links Amazon e Shopee separados
         let linksHTML = '';
         if (p.linkAmazon) {
           linksHTML += `<a href="${p.linkAmazon}" target="_blank"><span class="loja-badge badge-amazon">Amazon</span></a>`;
@@ -122,7 +128,6 @@ window.onload = function() {
         if (p.linkShopee) {
           linksHTML += `<a href="${p.linkShopee}" target="_blank"><span class="loja-badge badge-shopee">Shopee</span></a>`;
         }
-        // Fallback pro campo 'link' antigo
         if (!p.linkAmazon && !p.linkShopee && p.link) {
           linksHTML = `<a href="${p.link}" target="_blank">Abrir</a>`;
         }
@@ -156,15 +161,29 @@ window.onload = function() {
     btn.disabled = true;
     btn.textContent = 'Verificando...';
     
+    // Remove classe de erro
+    inputAmazon.classList.remove('erro');
+    inputShopee.classList.remove('erro');
+    
     const dados = {
-      nome: document.getElementById('nome').value,
-      preco: document.getElementById('preco').value,
-      img: document.getElementById('img').value,
-      linkAmazon: document.getElementById('linkAmazon').value,
-      linkShopee: document.getElementById('linkShopee').value,
-      categoria: document.getElementById('categoria').value,
+      nome: document.getElementById('nome').value.trim(),
+      preco: document.getElementById('preco').value.trim(),
+      img: document.getElementById('img').value.trim(),
+      linkAmazon: document.getElementById('linkAmazon').value.trim(),
+      linkShopee: document.getElementById('linkShopee').value.trim(),
+      categoria: document.getElementById('categoria').value.trim(),
       destaque: document.getElementById('destaque').checked
     };
+
+    // Validação: pelo menos 1 link
+    if (!dados.linkAmazon && !dados.linkShopee) {
+      mostrarErro('❌ Preencha pelo menos o link da Amazon ou da Shopee');
+      inputAmazon.classList.add('erro');
+      inputShopee.classList.add('erro');
+      btn.disabled = false;
+      btn.textContent = 'Salvar no Supabase';
+      return;
+    }
 
     try {
       const res = await fetch('/api/produtos');
@@ -172,24 +191,30 @@ window.onload = function() {
       const nomeNovo = normalizarNome(dados.nome);
       
       if (todos.find(p => normalizarNome(p.nome) === nomeNovo)) {
-        alert('❌ Produto duplicado! Já existe um produto com esse nome.');
+        mostrarErro('❌ Produto duplicado! Já existe um produto com esse nome.');
         btn.disabled = false;
         btn.textContent = 'Salvar no Supabase';
         return;
       }
 
       btn.textContent = 'Salvando...';
-      await fetch('/api/produtos', {
+      const response = await fetch('/api/produtos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dados)
       });
 
+      const resultado = await response.json();
+
+      if (!response.ok) {
+        throw new Error(resultado.erro || 'Erro desconhecido do servidor');
+      }
+
       form.reset();
-      carregarProdutos();
-      alert('✅ Produto cadastrado!');
+      await carregarProdutos();
+      alert('✅ Produto cadastrado com sucesso!');
     } catch (error) {
-      alert('❌ Erro ao salvar');
+      mostrarErro('❌ Erro ao salvar: ' + error.message);
       console.error(error);
     } finally {
       btn.disabled = false;
@@ -197,7 +222,7 @@ window.onload = function() {
     }
   };
 
-  window.editarProduto = function(p) {
+  window.editarProduto = async function(p) {
     const nome = prompt('Nome:', p.nome);
     if (!nome) return;
     const preco = prompt('Preço:', p.preco);
@@ -207,17 +232,40 @@ window.onload = function() {
     const categoria = prompt('Categoria:', p.categoria);
     const destaque = confirm('Marcar como DESTAQUE?');
     
-    fetch(`/api/produtos/${p.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nome, preco, img, linkAmazon, linkShopee, categoria, destaque })
-    }).then(() => carregarProdutos());
+    if (!linkAmazon && !linkShopee) {
+      alert('❌ Precisa ter pelo menos Amazon ou Shopee');
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/api/produtos/${p.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, preco, img, linkAmazon, linkShopee, categoria, destaque })
+      });
+      
+      if (!response.ok) {
+        const erro = await response.json();
+        throw new Error(erro.erro);
+      }
+      
+      await carregarProdutos();
+      alert('✅ Produto atualizado!');
+    } catch (error) {
+      alert('❌ Erro ao atualizar: ' + error.message);
+    }
   };
 
   window.excluirProduto = async function(id) {
     if (confirm('Tem certeza que quer excluir esse produto?')) {
-      await fetch(`/api/produtos/${id}`, { method: 'DELETE' });
-      carregarProdutos();
+      try {
+        const response = await fetch(`/api/produtos/${id}`, { method: 'DELETE' });
+        if (!response.ok) throw new Error('Erro ao excluir');
+        await carregarProdutos();
+        alert('✅ Produto excluído!');
+      } catch (error) {
+        alert('❌ Erro ao excluir: ' + error.message);
+      }
     }
   };
 
