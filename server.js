@@ -37,31 +37,32 @@ const supabase = createClient(
   process.env.SUPABASE_KEY
 );
 
-// API: Busca produtos
+// API: Busca produtos - JÁ TÁ CERTO, PEGA TUDO COM SELECT *
 app.get('/api/produtos', async (req, res) => {
   const { data, error } = await supabase.from('produtos').select('*').order('criado_em', { ascending: false });
   if (error) return res.status(500).json({ erro: error.message });
   res.json(data);
 });
 
-// API: Salva produto
+// API: Salva produto - ATUALIZADO PRA SHOPEE
 app.post('/api/produtos', async (req, res) => {
-  let { nome, preco, img, link, categoria, destaque } = req.body;
-  if (!nome ||!img ||!link) return res.status(400).json({ erro: 'Nome, imagem e link são obrigatórios' });
+  let { nome, preco, img, link, linkAmazon, linkShopee, categoria, destaque } = req.body;
+  if (!nome ||!img) return res.status(400).json({ erro: 'Nome e imagem são obrigatórios' });
+  if (!linkAmazon &&!linkShopee &&!link) return res.status(400).json({ erro: 'Precisa ter pelo menos 1 link: Amazon ou Shopee' });
   if (preco) preco = parseFloat(preco.replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
   if (!categoria) categoria = 'Geral';
   if (destaque === undefined) destaque = false;
-  const { data, error } = await supabase.from('produtos').insert([{ nome, preco, img, link, categoria, destaque }]).select();
+  const { data, error } = await supabase.from('produtos').insert([{ nome, preco, img, link, linkAmazon, linkShopee, categoria, destaque }]).select();
   if (error) return res.status(500).json({ erro: error.message });
   res.status(201).json(data[0]);
 });
 
-// API: Edita produto
+// API: Edita produto - ATUALIZADO PRA SHOPEE
 app.put('/api/produtos/:id', async (req, res) => {
   const { id } = req.params;
-  let { nome, preco, img, link, categoria, destaque } = req.body;
+  let { nome, preco, img, link, linkAmazon, linkShopee, categoria, destaque } = req.body;
   if (preco) preco = parseFloat(preco.replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
-  const { data, error } = await supabase.from('produtos').update({ nome, preco, img, link, categoria, destaque }).eq('id', id).select();
+  const { data, error } = await supabase.from('produtos').update({ nome, preco, img, link, linkAmazon, linkShopee, categoria, destaque }).eq('id', id).select();
   if (error) return res.status(500).json({ erro: error.message });
   res.json(data[0]);
 });
