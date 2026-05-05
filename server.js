@@ -4,10 +4,12 @@ const { createClient } = require('@supabase/supabase-js');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// SENHA DO ADMIN - TROCA AQUI SE QUISER
 const SENHA_ADMIN = 'Fhl330282@';
 
 app.use(express.json());
 
+// PROTEÇÃO DO ADMIN - TEM QUE VIR ANTES DO STATIC
 const protegerAdmin = (req, res, next) => {
   const { authorization } = req.headers;
   if (!authorization) {
@@ -22,10 +24,12 @@ const protegerAdmin = (req, res, next) => {
   return res.status(401).send('Senha incorreta');
 };
 
+// ROTA DO ADMIN PROTEGIDA
 app.get('/admin', protegerAdmin, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
+// STATIC DEPOIS DA ROTA PROTEGIDA
 app.use(express.static('public'));
 
 const supabase = createClient(
@@ -33,9 +37,14 @@ const supabase = createClient(
   process.env.SUPABASE_KEY
 );
 
+// API: Busca produtos
 app.get('/api/produtos', async (req, res) => {
   try {
-    const { data, error } = await supabase.from('produtos').select('*').order('criado_em', { ascending: false });
+    const { data, error } = await supabase
+     .from('produtos')
+     .select('*')
+     .order('criado_em', { ascending: false });
+
     if (error) throw error;
     res.json(data || []);
   } catch (error) {
@@ -44,6 +53,7 @@ app.get('/api/produtos', async (req, res) => {
   }
 });
 
+// API: Salva produto
 app.post('/api/produtos', async (req, res) => {
   try {
     let { nome, preco, img, link, linkAmazon, linkShopee, categoria, destaque } = req.body;
@@ -55,16 +65,19 @@ app.post('/api/produtos', async (req, res) => {
     if (!categoria) categoria = 'Geral';
     if (destaque === undefined) destaque = false;
 
-    const { data, error } = await supabase.from('produtos').insert([{
-      nome,
-      preco,
-      img,
-      link: link || null,
-      linkAmazon: linkAmazon || null,
-      linkShopee: linkShopee || null,
-      categoria,
-      destaque
-    }]).select();
+    const { data, error } = await supabase
+     .from('produtos')
+     .insert([{
+        nome,
+        preco,
+        img,
+        link: link || null,
+        linkAmazon: linkAmazon || null,
+        linkShopee: linkShopee || null,
+        categoria,
+        destaque
+      }])
+     .select();
 
     if (error) throw error;
     res.status(201).json(data[0]);
@@ -74,6 +87,7 @@ app.post('/api/produtos', async (req, res) => {
   }
 });
 
+// API: Edita produto
 app.put('/api/produtos/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -82,16 +96,20 @@ app.put('/api/produtos/:id', async (req, res) => {
     if (!linkAmazon &&!linkShopee &&!link) return res.status(400).json({ erro: 'Informe pelo menos um link: Amazon ou Shopee' });
     if (preco) preco = parseFloat(String(preco).replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
 
-    const { data, error } = await supabase.from('produtos').update({
-      nome,
-      preco,
-      img,
-      link: link || null,
-      linkAmazon: linkAmazon || null,
-      linkShopee: linkShopee || null,
-      categoria,
-      destaque
-    }).eq('id', id).select();
+    const { data, error } = await supabase
+     .from('produtos')
+     .update({
+        nome,
+        preco,
+        img,
+        link: link || null,
+        linkAmazon: linkAmazon || null,
+        linkShopee: linkShopee || null,
+        categoria,
+        destaque
+      })
+     .eq('id', id)
+     .select();
 
     if (error) throw error;
     res.json(data[0]);
@@ -101,6 +119,7 @@ app.put('/api/produtos/:id', async (req, res) => {
   }
 });
 
+// API: Deleta produto
 app.delete('/api/produtos/:id', async (req, res) => {
   try {
     const { id } = req.params;
