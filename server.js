@@ -4,12 +4,10 @@ const { createClient } = require('@supabase/supabase-js');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// SENHA DO ADMIN - TROCA AQUI
 const SENHA_ADMIN = 'Fhl330282@';
 
 app.use(express.json());
 
-// PROTEÇÃO DO ADMIN - TEM QUE VIR ANTES DO STATIC
 const protegerAdmin = (req, res, next) => {
   const { authorization } = req.headers;
   if (!authorization) {
@@ -24,81 +22,95 @@ const protegerAdmin = (req, res, next) => {
   return res.status(401).send('Senha incorreta');
 };
 
-// ROTA DO ADMIN PROTEGIDA
 app.get('/admin', protegerAdmin, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
-// STATIC DEPOIS DA ROTA PROTEGIDA
 app.use(express.static('public'));
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY // MUDEI PRA SERVICE_ROLE_KEY
+  process.env.SUPABASE_KEY
 );
 
-// API: Busca produtos
 app.get('/api/produtos', async (req, res) => {
-  const { data, error } = await supabase.from('produtos').select('*').order('criado_em', { ascending: false });
-  if (error) return res.status(500).json({ erro: error.message });
-  res.json(data || []);
+  try {
+    const { data, error } = await supabase.from('produtos').select('*').order('criado_em', { ascending: false });
+    if (error) throw error;
+    res.json(data || []);
+  } catch (error) {
+    console.error('Erro GET /api/produtos:', error);
+    res.status(500).json({ erro: error.message });
+  }
 });
 
-// API: Salva produto
 app.post('/api/produtos', async (req, res) => {
-  let { nome, preco, img, link, linkAmazon, linkShopee, categoria, destaque } = req.body;
+  try {
+    let { nome, preco, img, link, linkAmazon, linkShopee, categoria, destaque } = req.body;
 
-  if (!nome ||!img) return res.status(400).json({ erro: 'Nome e imagem são obrigatórios' });
-  if (!linkAmazon &&!linkShopee &&!link) return res.status(400).json({ erro: 'Informe pelo menos um link: Amazon ou Shopee' });
+    if (!nome ||!img) return res.status(400).json({ erro: 'Nome e imagem são obrigatórios' });
+    if (!linkAmazon &&!linkShopee &&!link) return res.status(400).json({ erro: 'Informe pelo menos um link: Amazon ou Shopee' });
 
-  if (preco) preco = parseFloat(preco.replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
-  if (!categoria) categoria = 'Geral';
-  if (destaque === undefined) destaque = false;
+    if (preco) preco = parseFloat(String(preco).replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
+    if (!categoria) categoria = 'Geral';
+    if (destaque === undefined) destaque = false;
 
-  const { data, error } = await supabase.from('produtos').insert([{
-    nome,
-    preco,
-    img,
-    link: link || null,
-    linkAmazon: linkAmazon || null,
-    linkShopee: linkShopee || null,
-    categoria,
-    destaque
-  }]).select();
+    const { data, error } = await supabase.from('produtos').insert([{
+      nome,
+      preco,
+      img,
+      link: link || null,
+      linkAmazon: linkAmazon || null,
+      linkShopee: linkShopee || null,
+      categoria,
+      destaque
+    }]).select();
 
-  if (error) return res.status(500).json({ erro: error.message });
-  res.status(201).json(data[0]);
+    if (error) throw error;
+    res.status(201).json(data[0]);
+  } catch (error) {
+    console.error('Erro POST /api/produtos:', error);
+    res.status(500).json({ erro: error.message });
+  }
 });
 
-// API: Edita produto
 app.put('/api/produtos/:id', async (req, res) => {
-  const { id } = req.params;
-  let { nome, preco, img, linkAmazon, linkShopee, categoria, destaque } = req.body;
+  try {
+    const { id } = req.params;
+    let { nome, preco, img, link, linkAmazon, linkShopee, categoria, destaque } = req.body;
 
-  if (!linkAmazon &&!linkShopee &&!link) return res.status(400).json({ erro: 'Informe pelo menos um link: Amazon ou Shopee' });
-  if (preco) preco = parseFloat(preco.replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
+    if (!linkAmazon &&!linkShopee &&!link) return res.status(400).json({ erro: 'Informe pelo menos um link: Amazon ou Shopee' });
+    if (preco) preco = parseFloat(String(preco).replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
 
-  const { data, error } = await supabase.from('produtos').update({
-    nome,
-    preco,
-    img,
-    link: link || null,
-    linkAmazon: linkAmazon || null,
-    linkShopee: linkShopee || null,
-    categoria,
-    destaque
-  }).eq('id', id).select();
+    const { data, error } = await supabase.from('produtos').update({
+      nome,
+      preco,
+      img,
+      link: link || null,
+      linkAmazon: linkAmazon || null,
+      linkShopee: linkShopee || null,
+      categoria,
+      destaque
+    }).eq('id', id).select();
 
-  if (error) return res.status(500).json({ erro: error.message });
-  res.json(data[0]);
+    if (error) throw error;
+    res.json(data[0]);
+  } catch (error) {
+    console.error('Erro PUT /api/produtos:', error);
+    res.status(500).json({ erro: error.message });
+  }
 });
 
-// API: Deleta produto
 app.delete('/api/produtos/:id', async (req, res) => {
-  const { id } = req.params;
-  const { error } = await supabase.from('produtos').delete().eq('id', id);
-  if (error) return res.status(500).json({ erro: error.message });
-  res.status(204).send();
+  try {
+    const { id } = req.params;
+    const { error } = await supabase.from('produtos').delete().eq('id', id);
+    if (error) throw error;
+    res.status(204).send();
+  } catch (error) {
+    console.error('Erro DELETE /api/produtos:', error);
+    res.status(500).json({ erro: error.message });
+  }
 });
 
 app.get('/', (req, res) => {
