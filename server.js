@@ -108,5 +108,4 @@ app.delete('/api/produtos/:id', async (req, res) => {
   }
 });
 
-// IMPORTANTE: Vercel usa isso, não app.listen()
 module.exports = app;
