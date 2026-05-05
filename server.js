@@ -26,7 +26,7 @@ const protegerAdmin = (req, res, next) => {
 
 // ROTA DO ADMIN PROTEGIDA
 app.get('/admin', protegerAdmin, (req, res) => {
-  res.sendFile(path.join(__dirname, 'admin.html'));
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
 // STATIC DEPOIS DA ROTA PROTEGIDA
@@ -34,24 +34,38 @@ app.use(express.static('public'));
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
+  process.env.SUPABASE_SERVICE_ROLE_KEY // MUDEI PRA SERVICE_ROLE_KEY
 );
 
 // API: Busca produtos
 app.get('/api/produtos', async (req, res) => {
   const { data, error } = await supabase.from('produtos').select('*').order('criado_em', { ascending: false });
   if (error) return res.status(500).json({ erro: error.message });
-  res.json(data);
+  res.json(data || []);
 });
 
 // API: Salva produto
 app.post('/api/produtos', async (req, res) => {
-  let { nome, preco, img, link, categoria, destaque } = req.body;
-  if (!nome ||!img ||!link) return res.status(400).json({ erro: 'Nome, imagem e link são obrigatórios' });
+  let { nome, preco, img, link, linkAmazon, linkShopee, categoria, destaque } = req.body;
+
+  if (!nome ||!img) return res.status(400).json({ erro: 'Nome e imagem são obrigatórios' });
+  if (!linkAmazon &&!linkShopee &&!link) return res.status(400).json({ erro: 'Informe pelo menos um link: Amazon ou Shopee' });
+
   if (preco) preco = parseFloat(preco.replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
   if (!categoria) categoria = 'Geral';
   if (destaque === undefined) destaque = false;
-  const { data, error } = await supabase.from('produtos').insert([{ nome, preco, img, link, categoria, destaque }]).select();
+
+  const { data, error } = await supabase.from('produtos').insert([{
+    nome,
+    preco,
+    img,
+    link: link || null,
+    linkAmazon: linkAmazon || null,
+    linkShopee: linkShopee || null,
+    categoria,
+    destaque
+  }]).select();
+
   if (error) return res.status(500).json({ erro: error.message });
   res.status(201).json(data[0]);
 });
@@ -59,9 +73,22 @@ app.post('/api/produtos', async (req, res) => {
 // API: Edita produto
 app.put('/api/produtos/:id', async (req, res) => {
   const { id } = req.params;
-  let { nome, preco, img, link, categoria, destaque } = req.body;
+  let { nome, preco, img, linkAmazon, linkShopee, categoria, destaque } = req.body;
+
+  if (!linkAmazon &&!linkShopee &&!link) return res.status(400).json({ erro: 'Informe pelo menos um link: Amazon ou Shopee' });
   if (preco) preco = parseFloat(preco.replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
-  const { data, error } = await supabase.from('produtos').update({ nome, preco, img, link, categoria, destaque }).eq('id', id).select();
+
+  const { data, error } = await supabase.from('produtos').update({
+    nome,
+    preco,
+    img,
+    link: link || null,
+    linkAmazon: linkAmazon || null,
+    linkShopee: linkShopee || null,
+    categoria,
+    destaque
+  }).eq('id', id).select();
+
   if (error) return res.status(500).json({ erro: error.message });
   res.json(data[0]);
 });
@@ -71,11 +98,11 @@ app.delete('/api/produtos/:id', async (req, res) => {
   const { id } = req.params;
   const { error } = await supabase.from('produtos').delete().eq('id', id);
   if (error) return res.status(500).json({ erro: error.message });
-  res.json({ mensagem: 'Produto deletado' });
+  res.status(204).send();
 });
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(port, () => console.log(`Rodando na porta ${port}`));
