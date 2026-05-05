@@ -30,8 +30,11 @@
     .acoes { display: flex; gap: 8px; }
     .btn-editar { padding: 6px 15px; background: #f6ad55; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; }
     .btn-excluir { padding: 6px 15px; background: #f56565; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; }
-    a { color: #667eea; text-decoration: none; font-weight: 600; }
+    a { color: #667eea; text-decoration: none; font-weight: 600; font-size: 12px; display: block; margin-bottom: 4px; }
     #erroBox { background: #fed7d7; color: #c53030; padding: 20px; border-radius: 8px; margin: 20px 0; display: none; }
+    .loja-badge { display: inline-block; padding: 2px 8px; border-radius: 8px; font-size: 10px; font-weight: 700; margin-right: 4px; }
+    .badge-amazon { background: #FFD814; color: #0F1111; }
+    .badge-shopee { background: #ee4d2d; color: #fff; }
   </style>
 </head>
 <body>
@@ -41,19 +44,22 @@
 
     <form id="formProduto">
       <label>Nome do produto</label>
-      <input type="text" id="nome" placeholder="Ex: Notebook Gamer" required>
+      <input type="text" id="nome" placeholder="Ex: SSD NVMe 1TB Kingston" required>
 
       <label>Preço</label>
-      <input type="text" id="preco" placeholder="Ex: R$ 2.999,90" required>
+      <input type="text" id="preco" placeholder="Ex: R$ 299,90" required>
 
       <label>Link da imagem</label>
       <input type="text" id="img" placeholder="https://..." required>
 
-      <label>Link de afiliado</label>
-      <input type="text" id="link" placeholder="https://..." required>
+      <label>Link de afiliado Amazon</label>
+      <input type="text" id="linkAmazon" placeholder="https://amzn.to/xxx">
+
+      <label>Link de afiliado Shopee</label>
+      <input type="text" id="linkShopee" placeholder="https://s.shopee.com.br/xxx">
 
       <label>Categoria</label>
-      <input type="text" id="categoria" placeholder="Ex: Celulares, TVs, Áudio" required>
+      <input type="text" id="categoria" placeholder="Ex: Upgrade SSD, Celulares, Áudio" required>
 
       <div class="checkbox-wrapper">
         <input type="checkbox" id="destaque">
@@ -76,7 +82,7 @@
           <th>Nome</th>
           <th>Categoria</th>
           <th>Preço</th>
-          <th>Link</th>
+          <th>Links</th>
           <th>Ações</th>
         </tr>
       </thead>
@@ -107,6 +113,20 @@ window.onload = function() {
       lista.innerHTML = '';
       produtos.forEach(p => {
         const precoFormatado = p.preco ? `R$ ${parseFloat(p.preco).toFixed(2).replace('.', ',')}` : 'Consulte';
+        
+        // Renderiza links Amazon e Shopee separados
+        let linksHTML = '';
+        if (p.linkAmazon) {
+          linksHTML += `<a href="${p.linkAmazon}" target="_blank"><span class="loja-badge badge-amazon">Amazon</span></a>`;
+        }
+        if (p.linkShopee) {
+          linksHTML += `<a href="${p.linkShopee}" target="_blank"><span class="loja-badge badge-shopee">Shopee</span></a>`;
+        }
+        // Fallback pro campo 'link' antigo
+        if (!p.linkAmazon && !p.linkShopee && p.link) {
+          linksHTML = `<a href="${p.link}" target="_blank">Abrir</a>`;
+        }
+        
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${p.id}</td>
@@ -114,7 +134,7 @@ window.onload = function() {
           <td><strong>${p.nome}</strong>${p.destaque ? '<span class="badge-destaque">⭐ DESTAQUE</span>' : ''}</td>
           <td><span class="categoria-tag">${p.categoria || 'Geral'}</span></td>
           <td>${precoFormatado}</td>
-          <td><a href="${p.link}" target="_blank">Abrir</a></td>
+          <td>${linksHTML || '-'}</td>
           <td>
             <div class="acoes">
               <button class="btn-editar" onclick='editarProduto(${JSON.stringify(p)})'>Editar</button>
@@ -140,7 +160,8 @@ window.onload = function() {
       nome: document.getElementById('nome').value,
       preco: document.getElementById('preco').value,
       img: document.getElementById('img').value,
-      link: document.getElementById('link').value,
+      linkAmazon: document.getElementById('linkAmazon').value,
+      linkShopee: document.getElementById('linkShopee').value,
       categoria: document.getElementById('categoria').value,
       destaque: document.getElementById('destaque').checked
     };
@@ -181,13 +202,15 @@ window.onload = function() {
     if (!nome) return;
     const preco = prompt('Preço:', p.preco);
     const img = prompt('Imagem:', p.img);
-    const link = prompt('Link:', p.link);
+    const linkAmazon = prompt('Link Amazon:', p.linkAmazon || '');
+    const linkShopee = prompt('Link Shopee:', p.linkShopee || '');
     const categoria = prompt('Categoria:', p.categoria);
     const destaque = confirm('Marcar como DESTAQUE?');
+    
     fetch(`/api/produtos/${p.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nome, preco, img, link, categoria, destaque })
+      body: JSON.stringify({ nome, preco, img, linkAmazon, linkShopee, categoria, destaque })
     }).then(() => carregarProdutos());
   };
 
